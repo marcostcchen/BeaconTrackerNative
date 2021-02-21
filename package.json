@@ -1,0 +1,33 @@
+{
+  "name": "BeaconTrackerNative",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "cd android && ./gradlew clean && cd .. && react-native run-android",
+    "ios": "react-native run-ios --simulator='iPhone 11'",
+    "apk": "cd android && ./gradlew clean && ./gradlew assembleRelease",
+    "release": "cd android && ./gradlew clean && ./gradlew bundleRelease",
+    "device": "cd android && ./gradlew clean && ./gradlew installRelease",
+    "test": "jest",
+    "lint": "eslint .",
+    "clean": "rm -rf node_modules/ && rm -rf yarn.lock && yarn cache clean && yarn",
+    "typescript": "yarn tsc"
+  },
+  "dependencies": {
+    "react": "16.13.1",
+    "react-native": "0.63.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/runtime": "^7.8.4",
+    "@react-native-community/eslint-config": "^1.1.0",
+    "babel-jest": "^25.1.0",
+    "eslint": "^6.5.1",
+    "jest": "^25.1.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-test-renderer": "16.13.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
