@@ -1,12 +1,16 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, StatusBar, } from 'react-native';
+import * as React from 'react';
+import { SafeAreaView, StyleSheet, ScrollView, Text } from 'react-native';
 
-export const App = () => {
+interface Props {
+  
+}
+
+export const App: React.FC<Props> = () => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <ScrollView contentInsetAdjustmentBehavior="automatic">
+          <Text></Text>
         </ScrollView>
       </SafeAreaView>
     </>
