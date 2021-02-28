@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "cd android && ./gradlew clean && cd .. && npx react-native run-android",
-    "ios": "npx react-native run-ios --simulator='iPhone 11'",
+    "android": "cd android && ./gradlew clean && cd .. && react-native run-android",
+    "ios": "react-native run-ios --simulator='iPhone 11'",
     "apk": "cd android && ./gradlew clean && ./gradlew assembleRelease",
     "release": "cd android && ./gradlew clean && ./gradlew bundleRelease",
     "device": "cd android && ./gradlew clean && ./gradlew installRelease",
@@ -19,6 +19,7 @@
     "@react-navigation/stack": "^5.14.2",
     "react": "16.13.1",
     "react-native": "0.63.4",
+    "react-native-ble-manager": "^7.4.2",
     "react-native-gesture-handler": "^1.10.1",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
