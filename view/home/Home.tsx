@@ -46,7 +46,7 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
  
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar  translucent backgroundColor="transparent" />
       <SafeAreaView>
         <Text>Aqui</Text>
       </SafeAreaView>
