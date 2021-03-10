@@ -1,38 +1,16 @@
 import BleManager from 'react-native-ble-manager';
-
-
-import React, {
-  useState,
-  useEffect,
-} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  NativeModules,
-  NativeEventEmitter,
-  Button,
-  Platform,
-  PermissionsAndroid,
-  FlatList,
-  TouchableHighlight,
-} from 'react-native';
-
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-
-const BleManagerModule = NativeModules.BleManager;
-const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
+import React, { useState, useEffect, } from 'react';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, NativeModules, NativeEventEmitter, Button, Platform, PermissionsAndroid, FlatList, TouchableHighlight } from 'react-native';
+import { Colors, } from 'react-native/Libraries/NewAppScreen';
 
 interface Props {
 
 }
 
 export const HomeScreen: React.FC<Props> = (props: Props) => {
+  const BleManagerModule = NativeModules.BleManager;
+  const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);  
+
   const [isScanning, setIsScanning] = useState(false);
   const peripherals = new Map();
   const [list, setList] = useState([]);
@@ -154,7 +132,6 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     }
 
   }
-
 
   const renderItem = (item: any) => {
     const color = item.connected ? 'green' : '#fff';
