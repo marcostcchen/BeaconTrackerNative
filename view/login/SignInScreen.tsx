@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Platform,
-  StyleSheet,
-  StatusBar,
-  Alert
-} from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Platform, StyleSheet, StatusBar, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -143,8 +134,8 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
               color: colors.text
             }]}
             autoCapitalize="none"
-            // onChangeText={(val) => textInputChange(val)}
-            // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+          // onChangeText={(val) => textInputChange(val)}
+          // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
           />
           {data.check_textInputChange ?
             <Animatable.View
@@ -183,10 +174,10 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
               color: colors.text
             }]}
             autoCapitalize="none"
-            // onChangeText={(val) => handlePasswordChange(val)}
+          // onChangeText={(val) => handlePasswordChange(val)}
           />
           <TouchableOpacity
-            // onPress={updateSecureTextEntry}
+          // onPress={updateSecureTextEntry}
           >
             {data.secureTextEntry ?
               <Feather
@@ -216,7 +207,7 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
         <View style={styles.button}>
           <TouchableOpacity
             style={styles.signIn}
-            // onPress={() => { loginHandle(data.username, data.password) }}
+          // onPress={() => { loginHandle(data.username, data.password) }}
           >
             <LinearGradient
               colors={['#FFA07A', '#FF6347']}
