@@ -1,9 +1,10 @@
 import { Platform, StyleSheet } from "react-native";
+import { gray } from "../../../utils/color";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FF6347'
+    backgroundColor: gray
   },
   header: {
     flex: 1,
@@ -45,7 +46,6 @@ export const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     marginTop: Platform.OS === 'ios' ? 0 : -12,
-    paddingLeft: 10,
     color: '#05375a',
   },
   errorMsg: {
@@ -54,7 +54,13 @@ export const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    marginTop: 50
+    height: 50,
+    width: '80%',
+    backgroundColor: gray,
+    borderRadius: 15
+  },
+  buttonContainer: {
+    alignItems: 'center',
   },
   signIn: {
     width: '100%',

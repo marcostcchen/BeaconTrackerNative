@@ -4,6 +4,7 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '@react-navigation/native';
 import { styles } from './styles';
+import { gray, grayLight } from '../../../utils/color';
 
 interface Props {
   navigation: any
@@ -14,22 +15,23 @@ export const SplashScreen: React.FC<Props> = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor='#FF6347' barStyle="light-content" />
+      <StatusBar backgroundColor={gray} barStyle="light-content" />
       <View style={styles.header}>
+        <Text style={styles.brandTitle}>Beacon Tracker</Text>
         <Animatable.Image
           animation="bounceIn" source={require('../../../assets/logo.png')}
           style={styles.logo}
           duration={1500}
-          resizeMode="stretch"
+          resizeMode="contain"
         />
       </View>
       <Animatable.View style={[styles.footer, { backgroundColor: colors.background }]} animation="fadeInUpBig">
-        <Text style={[styles.title, { color: colors.text }]}>Find best food in your locality!</Text>
-        <Text style={styles.text}>Sign in with account</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Monitore o tempo no frigorífico!</Text>
+        <Text style={styles.text}>Faça seu login</Text>
         <View style={styles.button}>
           <TouchableOpacity onPress={() => props.navigation.navigate('SignInScreen')}>
-            <LinearGradient colors={['#FFA07A', '#FF6347']} style={styles.signIn}>
-              <Text style={styles.textSign}>Get Started</Text>
+            <LinearGradient colors={[grayLight, gray]} style={styles.signIn}>
+              <Text style={styles.textSign}>{"Iniciar >"}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>

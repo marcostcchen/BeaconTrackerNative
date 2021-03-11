@@ -1,9 +1,12 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, Platform, StyleSheet, StatusBar, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StatusBar } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from 'react-native-paper';
+import { gray, grayLight } from '../../../utils/color';
 import { styles } from './styles';
+import { Input, Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
   navigation: any
@@ -11,42 +14,43 @@ interface Props {
 
 export const SignInScreen: React.FC<Props> = (props: Props) => {
   const { colors } = useTheme();
-
+  const [loading, setLoading] = useState(false);
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor='#FF6347' barStyle="light-content" />
+      <StatusBar backgroundColor={gray} barStyle="light-content" />
       <View style={styles.header}>
-        <Text style={styles.text_header}>Welcome!</Text>
+        <Text style={styles.text_header}>Bem vindo!</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={[styles.footer, { backgroundColor: colors.background }]}>
-        <Text style={[styles.text_footer, { color: colors.text }]}>Username</Text>
-        <View style={styles.action}>
-          <TextInput placeholder="Your Username" placeholderTextColor="#666666" style={[styles.textInput, { color: colors.text }]} autoCapitalize="none" />
-        </View>
+        <Input
+          labelStyle={{ color: colors.text, fontSize: 14 }}
+          autoCapitalize="none"
+          label="E-mail"
+          placeholder="email@endereco.com"
+          leftIcon={<Icon name="envelope" size={20} color={gray} />}
+        // onChangeText={text => this.setState({ email: text.trim().toLowerCase() })}
+        // onSubmitEditing={() => { this.secondTextInputRef.focus() }}
+        />
 
-        <Text style={[styles.text_footer, { color: colors.text, marginTop: 35 }]}>Password</Text>
-        <View style={styles.action}>
-          <TextInput
-            placeholder="Your Password"
-            placeholderTextColor="#666666"
-            style={[styles.textInput, { color: colors.text }]}
-            autoCapitalize="none" />
-        </View>
-        <TouchableOpacity>
-          <Text style={{ color: '#FF6347', marginTop: 15 }}>Forgot password?</Text>
-        </TouchableOpacity>
-        <View style={styles.button}>
-          <TouchableOpacity style={styles.signIn}>
-            <LinearGradient colors={['#FFA07A', '#FF6347']} style={styles.signIn}>
-              <Text style={[styles.textSign, { color: '#fff' }]}>Sign In</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.signIn, { borderColor: '#FF6347', borderWidth: 1, marginTop: 15 }]}>
-            <Text style={[styles.textSign, { color: '#FF6347' }]}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+        <Input
+          labelStyle={{ color: colors.text, fontSize: 14 }}
+          autoCapitalize="none"
+          // ref={(ref) => this.secondTextInputRef = ref}
+          label="Senha"
+          leftIcon={<Icon name="lock" size={20} color={gray} />}
+          placeholder="*****"
+          // onChangeText={(text) => this.setState({ senha: text.trim() })}
+          textContentType="oneTimeCode"
+          secureTextEntry
+        // onSubmitEditing={this.postForms}
+        />
+        <Button
+          buttonStyle={styles.button}
+          containerStyle={styles.buttonContainer}
+          title="Entrar"
+          onPress={() => setLoading(true)} loading={loading}
+          />
       </Animatable.View>
     </View>
   );

@@ -1,13 +1,13 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { blue } from "../../../utils/color";
+import { gray } from "../../../utils/color";
 
 const { height } = Dimensions.get("screen");
-const height_logo = height * 0.28;
+const height_logo = height * 0.40;
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: blue
+    backgroundColor: gray
   },
   header: {
     flex: 2,
@@ -23,8 +23,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 30
   },
   logo: {
-    width: height_logo,
-    height: height_logo
+    height: height_logo,
+  },
+  brandTitle: {
+    color: 'white',
+    fontSize: 30,
   },
   title: {
     color: '#05375a',
