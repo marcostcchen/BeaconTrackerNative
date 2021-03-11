@@ -17,7 +17,7 @@ export const SplashScreen: React.FC<Props> = (props: Props) => {
       <StatusBar backgroundColor='#FF6347' barStyle="light-content" />
       <View style={styles.header}>
         <Animatable.Image
-          animation="bounceIn" source={require('../../assets/logo.png')}
+          animation="bounceIn" source={require('../../../assets/logo.png')}
           style={styles.logo}
           duration={1500}
           resizeMode="stretch"
