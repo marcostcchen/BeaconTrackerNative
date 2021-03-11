@@ -3,6 +3,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen, SplashScreen, SignInScreen } from './view';
+import * as color from './utils/color';
 
 export const App = () => {
   const Stack = createStackNavigator();
@@ -19,7 +20,7 @@ export const App = () => {
 
 const screenOptions = {
   headerStyle: {
-    backgroundColor: '#f4511e',
+    backgroundColor: color.blue,
   },
   headerTintColor: '#fff',
   headerTitleStyle: {

@@ -1,0 +1,1 @@
+export const blue = "#c1e1ec";

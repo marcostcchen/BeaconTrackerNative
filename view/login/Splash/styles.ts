@@ -1,4 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
+import { blue } from "../../../utils/color";
 
 const { height } = Dimensions.get("screen");
 const height_logo = height * 0.28;
@@ -6,7 +7,7 @@ const height_logo = height * 0.28;
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FF6347'
+    backgroundColor: blue
   },
   header: {
     flex: 2,
