@@ -25,7 +25,13 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
 
   const makeLogin = async () => {
     setLoading(true);
-    const user: IUser | null = await fetch.makeLogin(login, password);
+    // const user: IUser | null = await fetch.makeLogin(login, password);
+    const user: IUser = {
+      idUser: 1,
+      login: "marcos",
+      name: "marcos",
+      role: 1
+    }
 
     if (!user) {
       Toast.show(ToastDanger("Erro durante login, tente novamente!"));
@@ -33,7 +39,13 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
       return;
     }
 
+    props.navigation.reset({
+      index: 0,
+      routes: [{ name: 'HomeScreen' }],
+    });
+
     await storeData(key_user, user);
+    props.navigation.navigate("HomeScreen");
   }
 
   return (

@@ -2,6 +2,7 @@ import BleManager from 'react-native-ble-manager';
 import React, { useState, useEffect, } from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, NativeModules, NativeEventEmitter, Button, Platform, PermissionsAndroid, FlatList, TouchableHighlight } from 'react-native';
 import { Colors, } from 'react-native/Libraries/NewAppScreen';
+import { gray } from '../../utils';
 
 interface Props {
 
@@ -9,7 +10,7 @@ interface Props {
 
 export const HomeScreen: React.FC<Props> = (props: Props) => {
   const BleManagerModule = NativeModules.BleManager;
-  const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);  
+  const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
   const [isScanning, setIsScanning] = useState(false);
   const peripherals = new Map();
@@ -148,40 +149,42 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <>
+    <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
-      <SafeAreaView>
-        <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
-          <View style={styles.body}>
-            <View style={{ margin: 10 }}>
-              <Button title={'Scan Bluetooth (' + (isScanning ? 'on' : 'off') + ')'}
-                onPress={() => startScan()}
-              />
-            </View>
-
-            <View style={{ margin: 10 }}>
-              <Button title="Retrieve connected peripherals" onPress={() => retrieveConnected()} />
-            </View>
-
-            {(list.length == 0) &&
-              <View style={{ flex: 1, margin: 20 }}>
-                <Text style={{ textAlign: 'center' }}>No peripherals</Text>
-              </View>
-            }
-
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
+        <View style={styles.body}>
+          <View style={{ margin: 10 }}>
+            <Button title={'Scan Bluetooth (' + (isScanning ? 'on' : 'off') + ')'}
+              onPress={() => startScan()}
+            />
           </View>
-        </ScrollView>
-        <FlatList
-          data={list}
-          renderItem={({ item }) => renderItem(item)}
-          keyExtractor={item => item.id}
-        />
-      </SafeAreaView>
-    </>
+
+          <View style={{ margin: 10 }}>
+            <Button title="Retrieve connected peripherals" onPress={() => retrieveConnected()} />
+          </View>
+
+          {(list.length == 0) &&
+            <View style={{ flex: 1, margin: 20 }}>
+              <Text style={{ textAlign: 'center' }}>No peripherals</Text>
+            </View>
+          }
+
+        </View>
+      </ScrollView>
+      <FlatList
+        data={list}
+        renderItem={({ item }) => renderItem(item)}
+        keyExtractor={item => item.id}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: gray
+  },
   scrollView: {
     backgroundColor: Colors.lighter,
   },

@@ -11,10 +11,10 @@ export const App = () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator headerMode='none' initialRouteName="SplashScreen" screenOptions={screenOptions}>
-          <Stack.Screen name="SignInScreen" component={SignInScreen} />
-          <Stack.Screen name="SplashScreen" component={SplashScreen} />
-          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Navigator initialRouteName="SplashScreen" screenOptions={screenOptions}>
+          <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false, }} />
+          <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false, }} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} options={{title: "Beacon Tracker"}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
@@ -23,10 +23,26 @@ export const App = () => {
 
 const screenOptions = {
   headerStyle: {
-    backgroundColor: color.blue,
+    backgroundColor: color.gray,
   },
+  cardStyleInterpolator: ({ current: { progress } }) => ({
+    cardStyle: {
+      opacity: progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+      }),
+    },
+    overlayStyle: {
+      opacity: progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 0.5],
+        extrapolate: 'clamp',
+      }),
+    },
+  }),
+  cardStyle: { backgroundColor: 'transparent' },
   headerTintColor: '#fff',
   headerTitleStyle: {
-    fontWeight: 'bold',
+    
   },
 }
