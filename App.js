@@ -1,48 +1,86 @@
 import 'react-native-gesture-handler';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { HomeScreen, SplashScreen, SignInScreen } from './view';
-import * as color from './utils/color';
+
+import { getData, key_user, removeData, storeData } from './utils';
+import { DrawerContent } from './component';
+import { HomeScreen, LoginStackScreen } from './view';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { ActivityIndicator, View } from 'react-native';
+import { AuthContext } from './component';
 
 export const App = () => {
-  const Stack = createStackNavigator();
+  const Drawer = createDrawerNavigator();
+
+  const initialLoginState = {
+    isLoading: true,
+    user: null,
+  };
+
+  const loginReducer = (prevState, action) => {
+    switch (action.type) {
+      case 'RETRIEVE_TOKEN':
+        return {
+          ...prevState,
+          user: action.user,
+          isLoading: false,
+        };
+      case 'LOGIN':
+        return {
+          ...prevState,
+          user: action.user,
+          isLoading: false,
+        };
+      case 'LOGOUT':
+        return {
+          ...prevState,
+          user: null,
+          isLoading: false,
+        };
+    }
+  };
+
+  const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
+
+  const authContext = React.useMemo(() => ({
+    signIn: async (user) => {
+      await storeData(key_user, JSON.stringify(user));
+      dispatch({ type: 'LOGIN', user });
+    },
+    signOut: async () => {
+      await removeData(key_user);
+      dispatch({ type: 'LOGOUT' });
+    },
+  }), []);
+
+  useEffect(() => {
+    setTimeout(async () => {
+      const user = await getData(key_user);
+      dispatch({ type: 'RETRIEVE_TOKEN', user });
+    }, 1);
+  }, []);
+
+  if (loginState.isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="SplashScreen" screenOptions={screenOptions}>
-          <Stack.Screen name="SignInScreen" component={SignInScreen} options={{ headerShown: false, }} />
-          <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false, }} />
-          <Stack.Screen name="HomeScreen" component={HomeScreen} options={{title: "Beacon Tracker"}}/>
-        </Stack.Navigator>
-      </NavigationContainer>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          {loginState.user === null ?
+            (<LoginStackScreen />)
+            :
+            (<Drawer.Navigator>
+              <Drawer.Screen name="HomeScreen" component={HomeScreen} />
+            </Drawer.Navigator>)}
+        </NavigationContainer>
+      </AuthContext.Provider>
     </SafeAreaProvider>
   );
 };
-
-const screenOptions = {
-  headerStyle: {
-    backgroundColor: color.gray,
-  },
-  cardStyleInterpolator: ({ current: { progress } }) => ({
-    cardStyle: {
-      opacity: progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1],
-      }),
-    },
-    overlayStyle: {
-      opacity: progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 0.5],
-        extrapolate: 'clamp',
-      }),
-    },
-  }),
-  cardStyle: { backgroundColor: 'transparent' },
-  headerTintColor: '#fff',
-  headerTitleStyle: {
-    
-  },
-}

@@ -6,10 +6,10 @@ import { useTheme } from 'react-native-paper';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-import { ToastDanger, gray, storeData, key_user } from '../../../utils';
+import { ToastDanger, gray } from '../../../utils';
 import { IUser } from '../../../model';
+import { AuthContext } from '../../../component';
 
-import * as fetch from './fetch';
 import { styles } from './styles';
 
 interface Props {
@@ -21,6 +21,8 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const { signIn } = React.useContext(AuthContext);
+
   let secondTextInputRef: any = React.createRef();
 
   const makeLogin = async () => {
@@ -39,13 +41,7 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
       return;
     }
 
-    props.navigation.reset({
-      index: 0,
-      routes: [{ name: 'HomeScreen' }],
-    });
-
-    await storeData(key_user, user);
-    props.navigation.navigate("HomeScreen");
+    signIn(user);
   }
 
   return (
