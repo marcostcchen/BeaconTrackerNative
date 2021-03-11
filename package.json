@@ -14,10 +14,12 @@
     "typescript": "yarn tsc"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.14.1",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.14.2",
     "@types/react-native-vector-icons": "^6.4.6",
+    "native-base": "^2.15.2",
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-animatable": "^1.3.3",

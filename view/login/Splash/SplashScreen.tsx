@@ -26,7 +26,7 @@ export const SplashScreen: React.FC<Props> = (props: Props) => {
         />
       </View>
       <Animatable.View style={[styles.footer, { backgroundColor: colors.background }]} animation="fadeInUpBig">
-        <Text style={[styles.title, { color: colors.text }]}>Monitore o tempo no frigorífico!</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Monitore seu tempo no frigorífico!</Text>
         <Text style={styles.text}>Faça seu login</Text>
         <View style={styles.button}>
           <TouchableOpacity onPress={() => props.navigation.navigate('SignInScreen')}>

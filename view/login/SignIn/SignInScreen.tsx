@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import { Toast } from 'native-base';
 import { View, Text, StatusBar } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { useTheme } from 'react-native-paper';
-import { gray, grayLight } from '../../../utils/color';
-import { styles } from './styles';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import LinearGradient from 'react-native-linear-gradient';
+
+import { ToastDanger, gray, storeData, key_user } from '../../../utils';
+import { IUser } from '../../../model';
+
+import * as fetch from './fetch';
+import { styles } from './styles';
 
 interface Props {
   navigation: any
@@ -15,6 +19,22 @@ interface Props {
 export const SignInScreen: React.FC<Props> = (props: Props) => {
   const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  let secondTextInputRef: any = React.createRef();
+
+  const makeLogin = async () => {
+    setLoading(true);
+    const user: IUser | null = await fetch.makeLogin(login, password);
+
+    if (!user) {
+      Toast.show(ToastDanger("Erro durante login, tente novamente!"));
+      setLoading(false);
+      return;
+    }
+
+    await storeData(key_user, user);
+  }
 
   return (
     <View style={styles.container}>
@@ -29,28 +49,29 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
           label="E-mail"
           placeholder="email@endereco.com"
           leftIcon={<Icon name="envelope" size={20} color={gray} />}
-        // onChangeText={text => this.setState({ email: text.trim().toLowerCase() })}
-        // onSubmitEditing={() => { this.secondTextInputRef.focus() }}
+          onChangeText={(text: string) => setLogin(text.trim().toLowerCase())}
+          onSubmitEditing={() => { secondTextInputRef.focus() }}
         />
 
         <Input
           labelStyle={{ color: colors.text, fontSize: 14 }}
           autoCapitalize="none"
-          // ref={(ref) => this.secondTextInputRef = ref}
+          ref={(ref: any) => secondTextInputRef = ref}
           label="Senha"
           leftIcon={<Icon name="lock" size={20} color={gray} />}
           placeholder="*****"
-          // onChangeText={(text) => this.setState({ senha: text.trim() })}
+          onChangeText={(text: string) => setPassword(text.trim().toLowerCase())}
           textContentType="oneTimeCode"
           secureTextEntry
-        // onSubmitEditing={this.postForms}
+          onSubmitEditing={makeLogin}
         />
         <Button
           buttonStyle={styles.button}
           containerStyle={styles.buttonContainer}
           title="Entrar"
-          onPress={() => setLoading(true)} loading={loading}
-          />
+          onPress={makeLogin}
+          loading={loading}
+        />
       </Animatable.View>
     </View>
   );
