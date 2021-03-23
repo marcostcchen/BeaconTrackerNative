@@ -4,11 +4,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { getData, key_user, removeData, storeData } from './utils';
-import { DrawerContent } from './component';
-import { HomeScreen, LoginStackScreen } from './view';
+import { LoginStackScreen } from './view';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthContext } from './component';
+import { HomeStackScreen } from './view/home/HomeStackScreen';
 
 export const App = () => {
   const Drawer = createDrawerNavigator();
@@ -77,7 +77,7 @@ export const App = () => {
             (<LoginStackScreen />)
             :
             (<Drawer.Navigator>
-              <Drawer.Screen name="HomeScreen" component={HomeScreen} />
+              <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
             </Drawer.Navigator>)}
         </NavigationContainer>
       </AuthContext.Provider>
