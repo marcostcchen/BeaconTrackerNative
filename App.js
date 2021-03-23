@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { getData, key_user, removeData, storeData } from './utils';
 import { LoginStackScreen } from './view';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, StatusBar, View } from 'react-native';
 import { AuthContext } from './component';
 import { HomeStackScreen } from './view/home/HomeStackScreen';
 
@@ -71,6 +71,7 @@ export const App = () => {
 
   return (
     <SafeAreaProvider>
+      <StatusBar barStyle="dark-content" />
       <AuthContext.Provider value={authContext}>
         <NavigationContainer>
           {loginState.user === null ?
