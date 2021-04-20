@@ -3,12 +3,12 @@ import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { getData, key_user, removeData, storeData } from './utils';
+import { getData, key_user, removeData, storeData, AuthContext } from './utils';
 import { LoginStackScreen } from './view';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { ActivityIndicator, StatusBar, View } from 'react-native';
-import { AuthContext } from './component';
-import { HomeStackScreen } from './view/home/HomeStackScreen';
+import { HomeStackScreen } from './view';
+import { DrawerContent } from './component';
 
 export const App = () => {
   const Drawer = createDrawerNavigator();
@@ -77,7 +77,7 @@ export const App = () => {
           {loginState.user === null ?
             (<LoginStackScreen />)
             :
-            (<Drawer.Navigator>
+            (<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
               <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
             </Drawer.Navigator>)}
         </NavigationContainer>

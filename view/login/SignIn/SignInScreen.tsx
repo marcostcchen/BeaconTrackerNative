@@ -6,9 +6,8 @@ import { useTheme } from 'react-native-paper';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-import { ToastDanger, gray } from '../../../utils';
+import { ToastDanger, gray, AuthContext } from '../../../utils';
 import { IUser } from '../../../model';
-import { AuthContext } from '../../../component';
 
 import { styles } from './styles';
 
