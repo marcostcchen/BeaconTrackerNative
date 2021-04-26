@@ -1,8 +1,9 @@
 import BleManager from 'react-native-ble-manager';
 import React, { useState, useEffect, } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, NativeModules, NativeEventEmitter, Button, Platform, PermissionsAndroid, FlatList, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, StatusBar, NativeModules, NativeEventEmitter, Button, Platform, PermissionsAndroid, FlatList, TouchableHighlight } from 'react-native';
 import { Colors, } from 'react-native/Libraries/NewAppScreen';
 import { gray } from '../../utils';
+import { IBLEScan } from '../../model';
 
 interface Props {
 
@@ -41,19 +42,22 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     }
   }, [])
 
-  const startScan = () => {
+  const startStopScan = () => {
     if (!isScanning) {
-      BleManager.scan([], 30, true).then((results: any) => {
-        console.log('Scanning...');
+      BleManager.scan([], 5, true).then((results: any) => {
         setIsScanning(true);
       }).catch((err: any) => {
         console.error(err);
       });
+    } else {
+      handleStopScan();
     }
   }
 
   const handleStopScan = () => {
-    console.log('Scan is stopped');
+    BleManager.stopScan().then(() => {
+      console.log("Scan stopped");
+    });
     setIsScanning(false);
   }
 
@@ -86,7 +90,7 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     });
   }
 
-  const handleDiscoverPeripheral = (peripheral) => {
+  const handleDiscoverPeripheral = (peripheral: IBLEScan) => {
     console.log('Got ble peripheral', peripheral);
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
@@ -134,9 +138,8 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
 
   }
 
-  const renderItem = (item: any) => {
+  const renderItem = (item: IBLEScan) => {
     const color = item.connected ? 'green' : '#fff';
-    console.log(item)
     return (
       <TouchableHighlight onPress={() => testPeripheral(item)}>
         <View style={{ backgroundColor: color }}>
@@ -151,11 +154,11 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
-      <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
+      <View style={styles.scrollView}>
         <View style={styles.body}>
           <View style={{ margin: 10 }}>
             <Button title={'Scan Bluetooth (' + (isScanning ? 'on' : 'off') + ')'}
-              onPress={() => startScan()}
+              onPress={() => startStopScan()}
             />
           </View>
 
@@ -168,9 +171,9 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
               <Text style={{ textAlign: 'center' }}>No peripherals</Text>
             </View>
           }
-
         </View>
-      </ScrollView>
+      </View>
+
       <FlatList
         data={list}
         renderItem={({ item }) => renderItem(item)}
@@ -222,3 +225,4 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
+
