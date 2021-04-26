@@ -48,6 +48,7 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
       <StatusBar backgroundColor={gray} barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.text_header}>Bem vindo!</Text>
+        <Text style={styles.text_header_description}>Efetue o login para continuar</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={[styles.footer, { backgroundColor: colors.background }]}>
         <Input
@@ -83,5 +84,3 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
     </View>
   );
 };
-
-export default SignInScreen;

@@ -19,17 +19,17 @@ export const SplashScreen: React.FC<Props> = (props: Props) => {
       <View style={styles.header}>
         <Text style={styles.brandTitle}>Beacon Tracker</Text>
         <Animatable.Image
-          animation="bounceIn" source={require('../../../assets/logo.png')}
+          animation="bounceIn" source={require('../../../img/logo.png')}
           style={styles.logo}
           duration={1500}
           resizeMode="contain"
         />
       </View>
       <Animatable.View style={[styles.footer, { backgroundColor: colors.background }]} animation="fadeInUpBig">
-        <Text style={[styles.title, { color: colors.text }]}>Monitore seu tempo no frigorífico!</Text>
-        <Text style={styles.text}>Faça seu login</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Bem vindo!</Text>
+        <Text style={styles.text}>Vamos realizar a ativação do seu bluetooth</Text>
         <View style={styles.button}>
-          <TouchableOpacity onPress={() => props.navigation.navigate('SignInScreen')}>
+          <TouchableOpacity onPress={() => props.navigation.navigate('ActivateBluetoothScreen')}>
             <LinearGradient colors={[grayLight, gray]} style={styles.signIn}>
               <Text style={styles.textSign}>{"Iniciar >"}</Text>
             </LinearGradient>

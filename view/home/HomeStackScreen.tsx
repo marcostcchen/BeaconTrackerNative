@@ -8,7 +8,7 @@ interface Props {
   navigation: any,
 }
 
-export const HomeStackScreen = (props: Props) => {
+export const HomeStackScreen: React.FC<Props> = (props: Props) => {
   const HomeStack = createStackNavigator();
 
   const screenOptions = {

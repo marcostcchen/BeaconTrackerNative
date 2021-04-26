@@ -25,6 +25,11 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 30
   },
+  text_header_description: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18
+  },
   text_footer: {
     color: '#05375a',
     fontSize: 18
