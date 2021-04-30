@@ -13,17 +13,16 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
   const BleManagerModule = NativeModules.BleManager;
   const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+  const scanInterval = 10000; //miliseconds
+  const scanTime = 10; //seconds
+
   const [isScanning, setIsScanning] = useState(false);
-  const peripherals = new Map();
-  const [list, setList] = useState([]);
+  const [list, setList] = useState<Array<IBLEScan>>([]);
 
   useEffect(() => {
     BleManager.start({ showAlert: false });
 
     bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
-    bleManagerEmitter.addListener('BleManagerStopScan', handleStopScan);
-    bleManagerEmitter.addListener('BleManagerDisconnectPeripheral', handleDisconnectedPeripheral);
-    bleManagerEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic);
 
     if (Platform.OS === 'android' && Platform.Version >= 23) {
       PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
@@ -40,114 +39,43 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
         }
       });
     }
+
+    //intervalo entre os scans
+    const interval = setInterval(() => {
+      handleStartScan();
+    }, scanInterval);
+    return () => clearInterval(interval);
+
   }, [])
 
-  const startStopScan = () => {
+  const handleStartScan = () => {
+    console.log(`Scanning for ${scanTime} seconds`)
+
     if (!isScanning) {
-      BleManager.scan([], 5, true).then((results: any) => {
-        setIsScanning(true);
+      setIsScanning(true);
+
+      BleManager.scan([], scanTime, true).then((results: any) => {
+        setIsScanning(false);
       }).catch((err: any) => {
         console.error(err);
       });
-    } else {
-      handleStopScan();
     }
-  }
-
-  const handleStopScan = () => {
-    BleManager.stopScan().then(() => {
-      console.log("Scan stopped");
-    });
-    setIsScanning(false);
-  }
-
-  const handleDisconnectedPeripheral = (data: any) => {
-    let peripheral = peripherals.get(data.peripheral);
-    if (peripheral) {
-      peripheral.connected = false;
-      peripherals.set(peripheral.id, peripheral);
-      setList(Array.from(peripherals.values()));
-    }
-    console.log('Disconnected from ' + data.peripheral);
-  }
-
-  const handleUpdateValueForCharacteristic = (data) => {
-    console.log('Received data from ' + data.peripheral + ' characteristic ' + data.characteristic, data.value);
-  }
-
-  const retrieveConnected = () => {
-    BleManager.getConnectedPeripherals([]).then((results) => {
-      if (results.length == 0) {
-        console.log('No connected peripherals')
-      }
-      console.log(results);
-      for (var i = 0; i < results.length; i++) {
-        var peripheral = results[i];
-        peripheral.connected = true;
-        peripherals.set(peripheral.id, peripheral);
-        setList(Array.from(peripherals.values()));
-      }
-    });
   }
 
   const handleDiscoverPeripheral = (peripheral: IBLEScan) => {
-    console.log('Got ble peripheral', peripheral);
-    if (!peripheral.name) {
-      peripheral.name = 'NO NAME';
+    if (peripheral.name === "EMBeacon12709") {
+      let newlist = [peripheral]
+      setList(newlist);
     }
-    peripherals.set(peripheral.id, peripheral);
-    setList(Array.from(peripherals.values()));
-  }
-
-
-  const testPeripheral = (peripheral) => {
-    if (peripheral) {
-      if (peripheral.connected) {
-        BleManager.disconnect(peripheral.id);
-      } else {
-        BleManager.connect(peripheral.id).then(() => {
-          let p = peripherals.get(peripheral.id);
-          if (p) {
-            p.connected = true;
-            peripherals.set(peripheral.id, p);
-            setList(Array.from(peripherals.values()));
-          }
-          console.log('Connected to ' + peripheral.id);
-          setTimeout(() => {
-
-            /* Test read current RSSI value */
-            BleManager.retrieveServices(peripheral.id).then((peripheralData) => {
-              console.log('Retrieved peripheral services', peripheralData);
-
-              BleManager.readRSSI(peripheral.id).then((rssi) => {
-                console.log('Retrieved actual RSSI value', rssi);
-                let p = peripherals.get(peripheral.id);
-                if (p) {
-                  p.rssi = rssi;
-                  peripherals.set(peripheral.id, p);
-                  setList(Array.from(peripherals.values()));
-                }
-              });
-            });
-          }, 900);
-        }).catch((error) => {
-          console.log('Connection error', error);
-        });
-      }
-    }
-
   }
 
   const renderItem = (item: IBLEScan) => {
-    const color = item.connected ? 'green' : '#fff';
     return (
-      <TouchableHighlight onPress={() => testPeripheral(item)}>
-        <View style={{ backgroundColor: color }}>
-          <Text style={{ fontSize: 12, textAlign: 'center', color: '#333333', padding: 10 }}>{item.name}</Text>
-          <Text style={{ fontSize: 10, textAlign: 'center', color: '#333333', padding: 2 }}>RSSI: {item.rssi}</Text>
-          <Text style={{ fontSize: 8, textAlign: 'center', color: '#333333', padding: 2, paddingBottom: 20 }}>{item.id}</Text>
-        </View>
-      </TouchableHighlight>
+      <View style={{ backgroundColor: '#fff' }}>
+        <Text style={{ fontSize: 12, textAlign: 'center', color: '#333333', padding: 10 }}>{item.name}</Text>
+        <Text style={{ fontSize: 10, textAlign: 'center', color: '#333333', padding: 2 }}>RSSI: {item.rssi}</Text>
+        <Text style={{ fontSize: 8, textAlign: 'center', color: '#333333', padding: 2, paddingBottom: 20 }}>{item.id}</Text>
+      </View>
     );
   }
 
@@ -157,13 +85,9 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
       <View style={styles.scrollView}>
         <View style={styles.body}>
           <View style={{ margin: 10 }}>
-            <Button title={'Scan Bluetooth (' + (isScanning ? 'on' : 'off') + ')'}
-              onPress={() => startStopScan()}
+            <Button title={'Scan 5 Segundos'}
+              onPress={handleStartScan}
             />
-          </View>
-
-          <View style={{ margin: 10 }}>
-            <Button title="Retrieve connected peripherals" onPress={() => retrieveConnected()} />
           </View>
 
           {(list.length == 0) &&
