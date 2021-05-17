@@ -19,7 +19,7 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
   const scanTime = 5; //seconds
 
   const [isScanning, setIsScanning] = useState(false);
-  const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([{ name: "EMBeacon12709", rssi: 0 }, { name: "EMBeacon13922", rssi: 0 }])
+  const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([{ idBeacon: 1, name: "EMBeacon12709", rssi: 0 }, { idBeacon: 2, name: "EMBeacon13922", rssi: 0 }])
 
   useEffect(() => {
     BleManager.start({ showAlert: false });
