@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { getData, key_user, removeData, storeData, AuthContext } from './utils';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { ActivityIndicator, StatusBar, View } from 'react-native';
-import { HomeStackScreen, StartingStackScreen } from './view';
+import { HomeStackScreen, StartingStackScreen, TimerScreen } from './view';
 import { DrawerContent } from './component';
 
 export const App = () => {
@@ -78,6 +78,7 @@ export const App = () => {
             :
             (<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
               <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
+              <Drawer.Screen name="TimerScreen" component={TimerScreen} />
             </Drawer.Navigator>)}
         </NavigationContainer>
       </AuthContext.Provider>

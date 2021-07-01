@@ -19,7 +19,6 @@
 		9D1F46AD378E923810DD7998 /* libPods-BeaconTrackerNative-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D20ABD8C580FAB9859D5736 /* libPods-BeaconTrackerNative-tvOS.a */; };
 		B4D7B44393D4C79030446B83 /* libPods-BeaconTrackerNative-BeaconTrackerNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3831D39854ECC4D5B45FC818 /* libPods-BeaconTrackerNative-BeaconTrackerNativeTests.a */; };
 		BBAD7055F2EDC0196EA1E404 /* libPods-BeaconTrackerNative-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B8A8FD8F7E66112BAAB4F04 /* libPods-BeaconTrackerNative-tvOSTests.a */; };
-		BEEC6D492328CCD3F7404BCF /* libPods-BeaconTrackerNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 38824A364D4A2B9219B04670 /* libPods-BeaconTrackerNative.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +62,22 @@
 		7635670658F79ED35CAF62F8 /* Pods-BeaconTrackerNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeaconTrackerNative.debug.xcconfig"; path = "Target Support Files/Pods-BeaconTrackerNative/Pods-BeaconTrackerNative.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BeaconTrackerNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		82B7F011564AFD39EBADD7F7 /* Pods-BeaconTrackerNative-BeaconTrackerNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeaconTrackerNative-BeaconTrackerNativeTests.debug.xcconfig"; path = "Target Support Files/Pods-BeaconTrackerNative-BeaconTrackerNativeTests/Pods-BeaconTrackerNative-BeaconTrackerNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		90186C64268E0E24006469E1 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
+		90186C65268E0E24006469E1 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
+		90186C66268E0E24006469E1 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
+		90186C67268E0E24006469E1 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		90186C68268E0E24006469E1 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		90186C69268E0E24006469E1 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
+		90186C6A268E0E24006469E1 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		90186C6B268E0E24006469E1 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
+		90186C6C268E0E24006469E1 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
+		90186C6D268E0E24006469E1 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
+		90186C6E268E0E24006469E1 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
+		90186C6F268E0E24006469E1 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
+		90186C70268E0E24006469E1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		90186C71268E0E24006469E1 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		90186C72268E0E24006469E1 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		90186C73268E0E24006469E1 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
 		9FD56861B202A18229AFAFAD /* Pods-BeaconTrackerNative-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeaconTrackerNative-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-BeaconTrackerNative-tvOS/Pods-BeaconTrackerNative-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		DA30FA37A9D07EBB22F93263 /* Pods-BeaconTrackerNative-BeaconTrackerNativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeaconTrackerNative-BeaconTrackerNativeTests.release.xcconfig"; path = "Target Support Files/Pods-BeaconTrackerNative-BeaconTrackerNativeTests/Pods-BeaconTrackerNative-BeaconTrackerNativeTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -82,7 +97,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEEC6D492328CCD3F7404BCF /* libPods-BeaconTrackerNative.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +139,7 @@
 		13B07FAE1A68108700A75B9A /* BeaconTrackerNative */ = {
 			isa = PBXGroup;
 			children = (
+				90186C63268E0E24006469E1 /* Fonts */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -161,7 +176,6 @@
 				302934805CBAAC7D149C32C0 /* Pods-BeaconTrackerNative-tvOSTests.debug.xcconfig */,
 				2A0B7237A40BF940FE1C857E /* Pods-BeaconTrackerNative-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -198,6 +212,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		90186C63268E0E24006469E1 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				90186C64268E0E24006469E1 /* AntDesign.ttf */,
+				90186C65268E0E24006469E1 /* Entypo.ttf */,
+				90186C66268E0E24006469E1 /* EvilIcons.ttf */,
+				90186C67268E0E24006469E1 /* Feather.ttf */,
+				90186C68268E0E24006469E1 /* FontAwesome.ttf */,
+				90186C69268E0E24006469E1 /* FontAwesome5_Brands.ttf */,
+				90186C6A268E0E24006469E1 /* FontAwesome5_Regular.ttf */,
+				90186C6B268E0E24006469E1 /* FontAwesome5_Solid.ttf */,
+				90186C6C268E0E24006469E1 /* Fontisto.ttf */,
+				90186C6D268E0E24006469E1 /* Foundation.ttf */,
+				90186C6E268E0E24006469E1 /* Ionicons.ttf */,
+				90186C6F268E0E24006469E1 /* MaterialCommunityIcons.ttf */,
+				90186C70268E0E24006469E1 /* MaterialIcons.ttf */,
+				90186C71268E0E24006469E1 /* Octicons.ttf */,
+				90186C72268E0E24006469E1 /* SimpleLineIcons.ttf */,
+				90186C73268E0E24006469E1 /* Zocial.ttf */,
+			);
+			name = Fonts;
+			path = "../node_modules/react-native-vector-icons/Fonts";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -210,6 +248,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				411FD4F2E509A076939B78E3 /* [CP] Copy Pods Resources */,
+				EFD9F7445F626C15CDF3B010 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -232,6 +271,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				3CDC7B890C356FBABE4B27AC /* [CP] Copy Pods Resources */,
+				2792931BB156420D5C3F508D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -377,7 +417,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		2792931BB156420D5C3F508D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeaconTrackerNative/Pods-BeaconTrackerNative-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeaconTrackerNative/Pods-BeaconTrackerNative-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -579,6 +637,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EFD9F7445F626C15CDF3B010 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeaconTrackerNative-BeaconTrackerNativeTests/Pods-BeaconTrackerNative-BeaconTrackerNativeTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeaconTrackerNative-BeaconTrackerNativeTests/Pods-BeaconTrackerNative-BeaconTrackerNativeTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -909,6 +985,8 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				EXCLUDED_ARCHS = arm64;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -969,6 +1047,8 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXCLUDED_ARCHS = arm64;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
