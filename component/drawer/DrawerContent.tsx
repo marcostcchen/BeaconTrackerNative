@@ -34,7 +34,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
             <DrawerItem
               icon={({ color, size }) => <Icon name="timer-outline" color={color} size={size} />}
               label="Timer"
-              onPress={() => navigateTo("TimerScreen")} />
+              onPress={() => navigateTo("TimerStackScreen")} />
 
             <DrawerItem
               icon={({ color, size }) => <Icon name="bell-outline" color={color} size={size} />}

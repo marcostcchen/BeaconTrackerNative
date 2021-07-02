@@ -2,14 +2,14 @@ import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { HomeScreen } from './HomeScreen';
+import { TimerScreen } from './TimerScreen';
 
 interface Props {
   navigation: any,
 }
 
-export const HomeStackScreen: React.FC<Props> = (props: Props) => {
-  const HomeStack = createStackNavigator();
+export const TimerStackScreen: React.FC<Props> = (props: Props) => {
+  const TimerStack = createStackNavigator();
 
   const screenOptions = {
     headerStyle: {
@@ -20,8 +20,8 @@ export const HomeStackScreen: React.FC<Props> = (props: Props) => {
     }
   }
 
-  const homeScreenOptions = {
-    title: "Home",
+  const timerScreenOptions = {
+    title: "Timer",
     headerLeft: () => (
       <View style={{ marginLeft: 10 }}>
         <Icon.Button
@@ -35,9 +35,9 @@ export const HomeStackScreen: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <HomeStack.Navigator screenOptions={screenOptions}>
-      <HomeStack.Screen name="Home" component={HomeScreen} options={homeScreenOptions} />
-    </HomeStack.Navigator>
+    <TimerStack.Navigator screenOptions={screenOptions}>
+      <TimerStack.Screen name="TimerScreen" component={TimerScreen} options={timerScreenOptions} />
+    </TimerStack.Navigator>
   )
 }
 
