@@ -12,4 +12,5 @@ export const removeData = async (key: string) => {
   await AsyncStorage.removeItem(key);
 }
 
-export const key_user = "@user"
+export const key_user = "@user";
+export const key_token = "@token";

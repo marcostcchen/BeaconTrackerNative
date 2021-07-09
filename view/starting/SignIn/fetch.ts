@@ -1,12 +1,11 @@
 import { Toast } from "native-base";
-import { IMakeLoginReq, IMakeLoginRes } from "../../../model";
-import { IUser } from "../../../model";
+import { IEfetuarLoginRequest, IEfetuarLoginResponse, IUser } from "../../../model";
 import { ToastDanger, urlAPI } from "../../../utils";
 
-export const makeLogin: (login: string, password: string) => Promise<IUser | null> = (login, password) => {
+export const makeLogin: (login: string, password: string) => Promise<IEfetuarLoginResponse | null> = (login, password) => {
   return new Promise(async (resolve) => {
-    const method = "login";
-    const json: IMakeLoginReq = { login, password }
+    const method = "efetuar-login";
+    const json: IEfetuarLoginRequest = { login, password }
 
     await fetch(`${urlAPI}/${method}`, {
       method: 'POST',
@@ -14,8 +13,8 @@ export const makeLogin: (login: string, password: string) => Promise<IUser | nul
       body: JSON.stringify(json)
     })
       .then(res => res.json())
-      .then((response: IMakeLoginRes) => {
-        resolve(response.user);
+      .then((response: IEfetuarLoginResponse) => {
+        resolve(response);
       })
       .catch(err => {
         setTimeout(() => {

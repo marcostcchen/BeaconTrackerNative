@@ -4,6 +4,5 @@ export enum Roles {
 
 export enum Status {
   Sucess,
-  Error,
-  NotAuthorized
+  Error
 }

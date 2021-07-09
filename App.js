@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-
+import { Root } from 'native-base';
 import { getData, key_user, removeData, storeData, AuthContext } from './utils';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { ActivityIndicator, StatusBar, View } from 'react-native';
@@ -71,17 +71,19 @@ export const App = () => {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />
-      <AuthContext.Provider value={authContext}>
-        <NavigationContainer>
-          {loginState.user === null ?
-            (<StartingStackScreen />)
-            :
-            (<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-              <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
-              <Drawer.Screen name="TimerStackScreen" component={TimerStackScreen} />
-            </Drawer.Navigator>)}
-        </NavigationContainer>
-      </AuthContext.Provider>
+      <Root>
+        <AuthContext.Provider value={authContext}>
+          <NavigationContainer>
+            {loginState.user === null ?
+              (<StartingStackScreen />)
+              :
+              (<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+                <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
+                <Drawer.Screen name="TimerStackScreen" component={TimerStackScreen} />
+              </Drawer.Navigator>)}
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </Root>
     </SafeAreaProvider>
   );
 };

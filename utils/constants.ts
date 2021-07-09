@@ -1,1 +1,1 @@
-export const urlAPI = 'http://192.168.0.22';
+export const urlAPI = 'http://192.168.0.21/BeaconTrackerApi/api';
