@@ -1,11 +1,14 @@
 import BleManager from 'react-native-ble-manager';
 import React, { useState, useEffect, } from 'react';
-import { StyleSheet, View, Text, StatusBar, NativeModules, NativeEventEmitter, Button, Platform, PermissionsAndroid, FlatList, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, StatusBar, NativeModules, NativeEventEmitter, Platform, PermissionsAndroid, FlatList, TouchableHighlight } from 'react-native';
+import { Button } from 'react-native-paper';
 import { Colors, } from 'react-native/Libraries/NewAppScreen';
-import { getData, gray, key_user } from '../../utils';
+import { getData, gray, key_user, ToastDanger } from '../../utils';
 import { IBeacon, IBLEScan } from '../../model';
 import * as fetch from './fetch';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'native-base';
+import { Status } from '../../types';
+import { ActivityIndicator } from 'react-native';
 
 interface Props {
 
@@ -15,19 +18,20 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
   const BleManagerModule = NativeModules.BleManager;
   const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-  const scanInterval = 60000; //miliseconds
-  const scanTime = 5; //seconds
+  const scanInterval = 50000; //miliseconds
+  const scanTime = 10; //seconds
 
+  const [initialLoading, setInitialLoading] = useState(true);
   const [isScanning, setIsScanning] = useState(false);
-  const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([{ idBeacon: 1, name: "EMBeacon12709", rssi: 0 }, { idBeacon: 2, name: "EMBeacon13922", rssi: 0 }])
+  const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([])
 
   useEffect(() => {
     BleManager.start({ showAlert: false });
     bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
 
     checkPermissions();
+    getBeacons();
 
-    //intervalo entre os scans
     const interval = setInterval(async () => {
       const idUser = await getData(key_user);
       await fetch.sendBeaconsRSSI(beaconsList, idUser);
@@ -36,6 +40,7 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     return () => clearInterval(interval);
 
   }, [])
+
 
   const checkPermissions = () => {
     if (Platform.OS === 'android' && Platform.Version >= 23) {
@@ -55,15 +60,28 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     }
   }
 
+  const getBeacons = async () => {
+    const listarBeaconsResponse = await fetch.listarBeacons();
+
+    if (!listarBeaconsResponse) {
+      Toast.show(ToastDanger("Não foi possível listar os beacons, tente novamente!"));
+      return;
+    }
+
+    if (listarBeaconsResponse.status === Status.Error) {
+      Toast.show(ToastDanger(listarBeaconsResponse.message));
+      return;
+    }
+
+    setBeaconsList(listarBeaconsResponse.listaBeacons)
+    setInitialLoading(false);
+  }
+
   const handleStartScan = () => {
     if (!isScanning) {
       setIsScanning(true);
-
-      BleManager.scan([], scanTime, true).then((results: any) => {
-        setIsScanning(false);
-      }).catch((err: any) => {
-        console.error(err);
-      });
+      BleManager.scan([], scanTime, true);
+      setTimeout(() => setIsScanning(false), scanTime * 1000)
     }
   }
 
@@ -76,15 +94,27 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     }
   }
 
+  if (initialLoading) {
+    return (
+      <View style={styles.container}>
+        <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+        <ActivityIndicator size="large" color="white" />
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <View style={styles.scrollView}>
         <View style={styles.body}>
           <View style={{ margin: 10 }}>
-            <Button title={'Scan 5 Segundos'}
+            <Button
               onPress={handleStartScan}
-            />
+              loading={isScanning}
+            >
+              <Text>Scan 10 Segundos</Text>
+            </Button>
           </View>
 
           {(beaconsList.length == 0) &&

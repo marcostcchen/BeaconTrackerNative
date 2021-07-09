@@ -1,9 +1,10 @@
-import { IBeacon } from "../../model";
-import { urlAPI } from "../../utils";
+import { IBeacon, IListarBeaconsResponse } from "../../model";
+import { getData, key_token, urlAPI } from "../../utils";
 
 export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, idUser: string | null) => Promise<boolean> = (beaconsList, idUser) => {
   return new Promise(async (resolve) => {
-    const entrypoint = "sendBeaconsRSSI";
+    const entrypoint = "enviar-user-beacon-RSSI";
+    const token = await getData(key_token);
 
     const json = {
       beaconsList,
@@ -14,6 +15,7 @@ export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, idUser: string | nul
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': token == null ? '' : token,
       },
       body: JSON.stringify(json)
     })
@@ -25,6 +27,30 @@ export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, idUser: string | nul
           resolve(false);
         }
       })
+
+  })
+}
+
+
+export const listarBeacons: () => Promise<IListarBeaconsResponse | null> = () => {
+  return new Promise(async (resolve) => {
+    const entrypoint = "listar-beacons";
+    const token = await getData(key_token);
+
+    fetch(`${urlAPI}/${entrypoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token == null ? '' : token,
+      },
+    })
+      .then(res => res.json())
+      .then((response: IListarBeaconsResponse) => {
+        resolve(response)
+      })
+      .catch(err => {
+        resolve(null)
+      });
 
   })
 }

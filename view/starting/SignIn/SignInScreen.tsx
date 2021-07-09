@@ -41,7 +41,8 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
       return;
     }
 
-    await storeData(key_token, efetuarLoginResponse.token);
+    const token = `bearer ${efetuarLoginResponse.token}`
+    await storeData(key_token, token);
     signIn(efetuarLoginResponse.user);
   }
 
