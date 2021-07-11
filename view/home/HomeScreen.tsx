@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, StatusBar, NativeModules, NativeEventEmitter, P
 import { Button } from 'react-native-paper';
 import { Colors, } from 'react-native/Libraries/NewAppScreen';
 import { getData, gray, key_user, ToastDanger } from '../../utils';
-import { IBeacon, IBLEScan } from '../../model';
+import { IBeacon, IBLEScan, IUser } from '../../model';
 import * as fetch from './fetch';
 import { Toast } from 'native-base';
 import { Status } from '../../types';
@@ -18,12 +18,12 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
   const BleManagerModule = NativeModules.BleManager;
   const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-  const scanInterval = 50000; //miliseconds
+  const scanInterval = 20000; //miliseconds
   const scanTime = 10; //seconds
 
   const [initialLoading, setInitialLoading] = useState(true);
   const [isScanning, setIsScanning] = useState(false);
-  const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([])
+  const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([{ "id": "60e85abd0c3488eeec4f05df", "idBeacon": 1, "name": "EMBeacon12709", "rssi": -1 }, { "id": "60e85adb0c3488eeec4f05e1", "idBeacon": 2, "name": "EMBeacon13922", "rssi": -1 }, { "id": "60e85ae90c3488eeec4f05e3", "idBeacon": 3, "name": "EMBeacon12677", "rssi": -1 }])
 
   useEffect(() => {
     BleManager.start({ showAlert: false });
@@ -33,12 +33,9 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     getBeacons();
 
     const interval = setInterval(async () => {
-      const idUser = await getData(key_user);
-      await fetch.sendBeaconsRSSI(beaconsList, idUser);
       handleStartScan();
     }, scanInterval);
     return () => clearInterval(interval);
-
   }, [])
 
 
@@ -73,7 +70,10 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
       return;
     }
 
-    setBeaconsList(listarBeaconsResponse.listaBeacons)
+    const { listaBeacons } = listarBeaconsResponse;
+    listaBeacons.map(b => b.rssi = -1)
+
+    setBeaconsList(listaBeacons)
     setInitialLoading(false);
   }
 
@@ -81,16 +81,27 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     if (!isScanning) {
       setIsScanning(true);
       BleManager.scan([], scanTime, true);
-      setTimeout(() => setIsScanning(false), scanTime * 1000)
+      setTimeout(async () => {
+        if (beaconsList.find(b => b.rssi === -1)) {
+          setIsScanning(false);
+          return;
+        }
+
+        const userString: string | null = await getData(key_user);
+        if (userString == null) return;
+
+        var user: IUser = JSON.parse(userString);
+        await fetch.sendBeaconsRSSI(beaconsList, user.id);
+        setIsScanning(false)
+      }, (scanTime + 3) * 1000)
     }
   }
 
   const handleDiscoverPeripheral = (peripheral: IBLEScan) => {
     let beacon = beaconsList.find(beacon => beacon.name == peripheral.name)
     if (beacon) {
-      let newBeaconList = beaconsList;
       beacon.rssi = peripheral.rssi;
-      setBeaconsList(newBeaconList);
+      setBeaconsList(beaconsList);
     }
   }
 
@@ -112,6 +123,7 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
             <Button
               onPress={handleStartScan}
               loading={isScanning}
+              disabled
             >
               <Text>Scan 10 Segundos</Text>
             </Button>

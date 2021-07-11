@@ -1,7 +1,7 @@
 import { Roles } from "../types";
 
 export interface IUser {
-  idUser: number,
+  id: string,
   name: string,
   role: Roles
 }
