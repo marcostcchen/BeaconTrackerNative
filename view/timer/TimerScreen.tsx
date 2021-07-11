@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StatusBar, StyleSheet, Text, View } from 'react-native'
 
 interface Props {
 
@@ -10,6 +10,7 @@ export const TimerScreen: React.FC<Props> = () => {
 
   return (
     <View style={styles.timerContainer}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <View style={styles.regionTitleContainer}>
         <Text>Região X - perigo Alto</Text>
       </View>

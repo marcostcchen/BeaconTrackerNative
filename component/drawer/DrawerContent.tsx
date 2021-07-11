@@ -40,6 +40,12 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
               icon={({ color, size }) => <Icon name="bell-outline" color={color} size={size} />}
               label="Notificações"
               onPress={() => navigateTo("NotificationScreen")} />
+
+            <DrawerItem
+              icon={({ color, size }) => <Icon name="home-map-marker" color={color} size={size} />}
+              label="Mapeamento"
+              onPress={() => navigateTo("MappingStackScreen")} />
+
           </Drawer.Section>
 
         </View>

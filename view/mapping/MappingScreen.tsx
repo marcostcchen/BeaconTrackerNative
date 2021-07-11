@@ -1,35 +1,37 @@
 import BleManager from 'react-native-ble-manager';
 import React, { useState, useEffect, useRef, } from 'react';
-import { StyleSheet, View, Text, StatusBar, NativeModules, NativeEventEmitter, Platform, PermissionsAndroid, FlatList, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, StatusBar, NativeModules, NativeEventEmitter, Platform, PermissionsAndroid } from 'react-native';
 import { Button } from 'react-native-paper';
 import { Colors, } from 'react-native/Libraries/NewAppScreen';
-import { getData, gray, key_user, ToastDanger } from '../../utils';
-import { IBeacon, IBLEScan, IUser } from '../../model';
+import { gray, ToastDanger } from '../../utils';
+import { IBeacon, IBLEScan } from '../../model';
 import * as fetch from './fetch';
 import { Toast } from 'native-base';
 import { Status } from '../../types';
 import { ActivityIndicator } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
 interface Props {
 
 }
 
-export const HomeScreen: React.FC<Props> = (props: Props) => {
+export const MappingScreen: React.FC<Props> = (props: Props) => {
   const BleManagerModule = NativeModules.BleManager;
   const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-  const scanInterval = 20000; //miliseconds
-  const scanTime = 10; //seconds
+  const scanInterval = 11000; //miliseconds
+  const scanTime = 8; //seconds
 
   const [initialLoading, setInitialLoading] = useState(true);
   const [isScanning, setIsScanning] = useState(false);
   const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([{ "id": "60e85abd0c3488eeec4f05df", "idBeacon": 1, "name": "EMBeacon12709", "rssi": -1 }, { "id": "60e85adb0c3488eeec4f05e1", "idBeacon": 2, "name": "EMBeacon13922", "rssi": -1 }, { "id": "60e85ae90c3488eeec4f05e3", "idBeacon": 3, "name": "EMBeacon12677", "rssi": -1 }])
-
-  const beaconListRef = useRef(beaconsList);
-  beaconListRef.current = beaconsList;
+  const [selectedRegion, setSelectedRegion] = useState("");
 
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
+
+  const beaconListRef = useRef(beaconsList);
+  beaconListRef.current = beaconsList;
 
   useEffect(() => {
     BleManager.start({ showAlert: false });
@@ -37,11 +39,6 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
 
     checkPermissions();
     getBeacons();
-
-    const interval = setInterval(async () => {
-      handleStartScan();
-    }, scanInterval);
-    return () => clearInterval(interval);
   }, [])
 
 
@@ -83,21 +80,38 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     setInitialLoading(false);
   }
 
+  const handleStartMapping = () => {
+    if (selectedRegion == "") {
+      Toast.show(ToastDanger("Região não selecionado!"));
+      return;
+    }
+
+    setIsScanning(true);
+
+    let interval = setInterval(async () => {
+      setIsScanning(true);
+      handleStartScan();
+    }, scanInterval);
+
+    setTimeout(() => {
+      setIsScanning(false);
+      clearInterval(interval)
+    }, 120000) //dps de 120 segundos
+  }
+
   const handleStartScan = () => {
     if (!isScanning) {
       setIsScanning(true);
       BleManager.scan([], scanTime, true).then(async () => {
         if (beaconListRef.current.find(b => b.rssi === -1)) {
-          setIsScanning(false);
           return;
         }
 
-        const userString: string | null = await getData(key_user);
-        if (userString == null) return;
+        if (!!!selectedRegion) {
+          return;
+        }
 
-        var user: IUser = JSON.parse(userString);
-        await fetch.sendBeaconsRSSI(beaconListRef.current, user.id);
-        setIsScanning(false)
+        await fetch.atualizarMapLocation(beaconListRef.current, selectedRegion);
       });
     }
   }
@@ -127,23 +141,37 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
         <View style={styles.body}>
           <View style={{ margin: 10 }}>
             <Button
-              onPress={handleStartScan}
+              onPress={handleStartMapping}
               loading={isScanning}
-              disabled
+              disabled={isScanning}
             >
-              <Text>Scan 10 Segundos</Text>
+              <Text>Mapear Regiao</Text>
             </Button>
           </View>
 
-          {(beaconsList.length == 0) &&
-            <View style={{ flex: 1, margin: 20 }}>
-              <Text style={{ textAlign: 'center' }}>No peripherals</Text>
-            </View>
-          }
+          <View style={styles.divider} />
+
+          <Picker
+            selectedValue={selectedRegion}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedRegion(itemValue)
+            }>
+            <Picker.Item label="Selecione a região" value="" />
+            <Picker.Item label="Sala de Corte" value="60e85cb80c3488eeec4f0657" />
+            <Picker.Item label="Freezer" value="60e85cb80c3488eeec4f0658" />
+            <Picker.Item label="Armazem de caixas" value="60e85cb80c3488eeec4f0659" />
+          </Picker>
+
         </View>
       </View>
 
       <View style={{ flex: 1 }}>
+        {(beaconsList.length == 0) &&
+          <View style={{ flex: 1, margin: 20 }}>
+            <Text style={{ textAlign: 'center' }}>No peripherals</Text>
+          </View>
+        }
+
         {beaconsList.map((beacon, index) => (
           <View key={index} style={{ backgroundColor: '#fff' }}>
             <Text style={{ fontSize: 12, textAlign: 'center', color: '#333333', padding: 10 }}>{beacon.name}</Text>
@@ -196,5 +224,10 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     textAlign: 'right',
   },
+  divider: {
+    height: 1,
+    borderTopColor: 'gray',
+    borderTopWidth: 0.5
+  }
 });
 
