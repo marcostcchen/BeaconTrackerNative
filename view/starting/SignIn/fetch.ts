@@ -1,4 +1,4 @@
-import { Toast } from "native-base";
+import Toast from "react-native-toast-message";
 import { IEfetuarLoginRequest, IEfetuarLoginResponse, IUser } from "../../../model";
 import { ToastDanger, urlAPI } from "../../../utils";
 
@@ -19,7 +19,7 @@ export const makeLogin: (login: string, password: string) => Promise<IEfetuarLog
       .catch(err => {
         setTimeout(() => {
           if (err.message === 'Network request failed') {
-            Toast.show(ToastDanger("Sem Conexão com internet, tente novamente!"));
+            Toast.show(ToastDanger("Erro!", "Sem Conexão com internet, tente novamente!"));
           }
         }, 100)
         resolve(null)

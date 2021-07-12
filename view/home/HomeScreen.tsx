@@ -6,9 +6,9 @@ import { Colors, } from 'react-native/Libraries/NewAppScreen';
 import { getData, gray, key_user, ToastDanger } from '../../utils';
 import { IBeacon, IBLEScan, IUser } from '../../model';
 import * as fetch from './fetch';
-import { Toast } from 'native-base';
 import { Status } from '../../types';
 import { ActivityIndicator } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 interface Props {
 
@@ -67,15 +67,14 @@ export const HomeScreen: React.FC<Props> = (props: Props) => {
     const listarBeaconsResponse = await fetch.listarBeacons();
 
     if (!listarBeaconsResponse) {
-      Toast.show(ToastDanger("Não foi possível listar os beacons, tente novamente!"));
+      Toast.show(ToastDanger('Erro!', 'Não foi possível listar Beacons! Tente novamente'));
       return;
     }
 
     if (listarBeaconsResponse.status === Status.Error) {
-      Toast.show(ToastDanger(listarBeaconsResponse.message));
+      Toast.show(ToastDanger('Erro!', listarBeaconsResponse.message));
       return;
     }
-
     const { listaBeacons } = listarBeaconsResponse;
     listaBeacons.map(b => b.rssi = -1)
 

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Toast } from 'native-base';
 import { View, Text, StatusBar } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { useTheme } from 'react-native-paper';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import * as fetch from './fetch';
+import Toast from 'react-native-toast-message';
 
 import { ToastDanger, gray, AuthContext, storeData, key_token } from '../../../utils';
 import { IEfetuarLoginResponse } from '../../../model';
@@ -32,12 +32,12 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
     setLoading(false);
     
     if (!efetuarLoginResponse) {
-      Toast.show(ToastDanger("Erro durante login, tente novamente!"));
+      Toast.show(ToastDanger("Erro!", "Erro durante login, tente novamente!"));
       return;
     }
     
     if(efetuarLoginResponse.status === Status.Error) {
-      Toast.show(ToastDanger(efetuarLoginResponse.message));
+      Toast.show(ToastDanger("Erro!", efetuarLoginResponse.message));
       return;
     }
 

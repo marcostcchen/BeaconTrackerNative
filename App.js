@@ -2,12 +2,12 @@ import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { Root } from 'native-base';
 import { getData, key_user, removeData, storeData, AuthContext } from './utils';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { ActivityIndicator, StatusBar, View } from 'react-native';
 import { HomeStackScreen, MappingStackScreen, StartingStackScreen, TimerStackScreen } from './view';
 import { DrawerContent } from './component';
+import Toast from 'react-native-toast-message';
 
 export const App = () => {
   const Drawer = createDrawerNavigator();
@@ -71,20 +71,19 @@ export const App = () => {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />
-      <Root>
-        <AuthContext.Provider value={authContext}>
-          <NavigationContainer>
-            {loginState.user === null ?
-              (<StartingStackScreen />)
-              :
-              (<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-                <Drawer.Screen name="TimerStackScreen" component={TimerStackScreen} />
-                <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
-                <Drawer.Screen name="MappingStackScreen" component={MappingStackScreen} />
-              </Drawer.Navigator>)}
-          </NavigationContainer>
-        </AuthContext.Provider>
-      </Root>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          {loginState.user === null ?
+            (<StartingStackScreen />)
+            :
+            (<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+              <Drawer.Screen name="TimerStackScreen" component={TimerStackScreen} />
+              <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
+              <Drawer.Screen name="MappingStackScreen" component={MappingStackScreen} />
+            </Drawer.Navigator>)}
+        </NavigationContainer>
+        <Toast ref={(ref) => Toast.setRef(ref)} />
+      </AuthContext.Provider>
     </SafeAreaProvider>
   );
 };

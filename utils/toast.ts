@@ -1,33 +1,33 @@
 interface ToastConfig {
-  text: string,
-  buttonText: string,
-  duration: number,
-  type?: "danger" | "success" | "warning",
+  text1: string,
+  text2: string,
+  visibilityTime: number,
+  type: "success" | "error" | "info",
 }
 
-export const ToastDanger = (text: string, duration: number = 5000): ToastConfig => {
+export const ToastDanger = (text1: string, text2: string, duration: number = 5000): ToastConfig => {
   return {
-    text,
-    duration,
-    buttonText: 'Fechar',
-    type: "danger",
+    text1,
+    text2,
+    visibilityTime: duration,
+    type: "error",
   }
 }
 
-export const ToastWarning = (text: string, duration: number = 5000): ToastConfig => {
+export const ToastWarning = (text1: string, text2: string, duration: number = 5000): ToastConfig => {
   return {
-    text,
-    duration,
-    buttonText: 'Fechar',
-    type: "warning",
+    text1,
+    text2,
+    visibilityTime: duration,
+    type: "info",
   }
 }
 
-export const ToastSuccess = (text: string, duration: number = 5000): ToastConfig => {
+export const ToastSuccess = (text1: string, text2: string, duration: number = 5000): ToastConfig => {
   return {
-    text,
-    duration,
-    buttonText: 'Fechar',
+    text1,
+    text2,
+    visibilityTime: duration,
     type: "success",
   }
 }

@@ -6,10 +6,10 @@ import { Colors, } from 'react-native/Libraries/NewAppScreen';
 import { gray, ToastDanger } from '../../utils';
 import { IBeacon, IBLEScan } from '../../model';
 import * as fetch from './fetch';
-import { Toast } from 'native-base';
 import { Status } from '../../types';
 import { ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Toast from 'react-native-toast-message';
 
 interface Props {
 
@@ -64,12 +64,12 @@ export const MappingScreen: React.FC<Props> = (props: Props) => {
     const listarBeaconsResponse = await fetch.listarBeacons();
 
     if (!listarBeaconsResponse) {
-      Toast.show(ToastDanger("Não foi possível listar os beacons, tente novamente!"));
+      Toast.show(ToastDanger("Erro!", "Não foi possível listar os beacons, tente novamente!"));
       return;
     }
 
     if (listarBeaconsResponse.status === Status.Error) {
-      Toast.show(ToastDanger(listarBeaconsResponse.message));
+      Toast.show(ToastDanger("Erro!", listarBeaconsResponse.message));
       return;
     }
 
@@ -82,7 +82,7 @@ export const MappingScreen: React.FC<Props> = (props: Props) => {
 
   const handleStartMapping = () => {
     if (selectedRegion == "") {
-      Toast.show(ToastDanger("Região não selecionado!"));
+      Toast.show(ToastDanger("Erro!", "Região não selecionado!"));
       return;
     }
 
