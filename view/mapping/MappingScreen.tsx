@@ -103,13 +103,8 @@ export const MappingScreen: React.FC<Props> = (props: Props) => {
     if (!isScanning) {
       setIsScanning(true);
       BleManager.scan([], scanTime, true).then(async () => {
-        if (beaconListRef.current.find(b => b.rssi === -1)) {
-          return;
-        }
-
-        if (!!!selectedRegion) {
-          return;
-        }
+        if (beaconListRef.current.find(b => b.rssi === -1)) return
+        if (!!!selectedRegion) return
 
         await fetch.atualizarMapLocation(beaconListRef.current, selectedRegion);
       });
