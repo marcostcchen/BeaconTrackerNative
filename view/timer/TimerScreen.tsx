@@ -91,16 +91,22 @@ export const TimerScreen: React.FC<Props> = () => {
         let myRSSIBeaconId2 = beaconList.find(b => b.idBeacon = 2);
         let myRSSIBeaconId3 = beaconList.find(b => b.idBeacon = 3);
 
+        
         let myRegion: IRegionMap | null = null;
         let minValor: number = 1000;
-
+        
         listMapRegions.map((mapRegion) => {
-          if(myRegion === null) {
-            myRegion = mapRegion;
-            return;
-          }
-
+          if (!!!myRSSIBeaconId1 || !!!myRSSIBeaconId2 || !!!myRSSIBeaconId3) return;   
           
+          let RSSI1diff = myRSSIBeaconId1.rssi - mapRegion.rssiBeaconId1Avg
+          let RSSI2diff = myRSSIBeaconId2.rssi - mapRegion.rssiBeaconId2Avg
+          let RSSI3diff = myRSSIBeaconId3.rssi - mapRegion.rssiBeaconId3Avg
+
+          let RSSIArray = [RSSI1diff, RSSI2diff, RSSI3diff];
+          let minRSSI = Math.min(...RSSIArray);
+
+          if(newMinValor)
+            myRegion = mapRegion;
         })
       });
     }
