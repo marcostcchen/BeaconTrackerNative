@@ -3,9 +3,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import { NativeEventEmitter, NativeModules, PermissionsAndroid, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { ActivityIndicator } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
-import { IBeacon, IBLEScan, IRegionMap } from '../../model';
+import { IBeacon, IBLEScan, IRegionMap, IUser } from '../../model';
 import { Status } from '../../types';
-import { ToastDanger } from '../../utils';
+import { getData, key_user, ToastDanger } from '../../utils';
 import * as fetch from './fetch';
 
 interface Props {
@@ -74,18 +74,14 @@ export const TimerScreen: React.FC<Props> = () => {
     if (!isScanning) {
       setIsScanning(true);
       BleManager.scan([], scanTime, true).then(async () => {
-        if (beaconListRef.current.find(b => b.rssi === -1)) return
+        updateMyLocation();
 
-        let beaconList: Array<IBeacon> = beaconListRef.current
-        beaconList.sort((a: IBeacon, b: IBeacon) => {
-          return b.rssi - a.rssi;
-        })
+        const userString: string | null = await getData(key_user);
+        if (userString == null) return;
 
-        let maiorBeacon = beaconList[0];
-        let myActualRegion = mapRegionRef.current.find((region) => region.idBeaconMinRSSI === maiorBeacon.idBeacon)
+        var user: IUser = JSON.parse(userString);
+        await fetch.sendBeaconsRSSI(beaconListRef.current, user.id);
 
-        if (myActualRegion) setMyRegion(myActualRegion);
-        forceUpdate();
         setIsScanning(false);
       });
     }
@@ -96,8 +92,24 @@ export const TimerScreen: React.FC<Props> = () => {
     if (beacon) {
       beacon.rssi = peripheral.rssi;
       setBeaconsList(beaconsList);
+      updateMyLocation();
       forceUpdate();
     }
+  }
+
+  const updateMyLocation = async () => {
+    if (beaconListRef.current.find(b => b.rssi === -1)) return
+
+    let beaconList: Array<IBeacon> = beaconListRef.current
+    beaconList.sort((a: IBeacon, b: IBeacon) => {
+      return b.rssi - a.rssi;
+    })
+
+    let maiorBeacon = beaconList[0];
+    let myActualRegion = mapRegionRef.current.find((region) => region.idBeaconMinRSSI === maiorBeacon.idBeacon)
+
+    if (myActualRegion) setMyRegion(myActualRegion);
+    forceUpdate();
   }
 
   const checkPermissions = () => {
@@ -146,15 +158,6 @@ export const TimerScreen: React.FC<Props> = () => {
               )}
             </View>
           )}
-          {/* <View style={styles.regionTitleContainer}>
-            <Text>Região X - perigo Alto</Text>
-          </View>
-          <View style={{ height: 20 }} />
-          <View style={styles.timeLeftContainer}>
-            <Text>
-              {time}
-            </Text>
-          </View> */}
         </>
       )}
     </View>
