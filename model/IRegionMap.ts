@@ -7,5 +7,6 @@ export interface IRegionMap {
   avgTemperature: number,
   rssiBeaconId1Avg: number,
   rssiBeaconId2Avg: number,
-  rssiBeaconId3Avg: number
+  rssiBeaconId3Avg: number,
+  idBeaconMinRSSI: number,
 }

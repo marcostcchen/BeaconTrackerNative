@@ -25,7 +25,7 @@ export const TimerScreen: React.FC<Props> = () => {
   const [listMapRegions, setListMapRegions] = useState<Array<IRegionMap>>([])
 
   const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([{ "id": "60e85abd0c3488eeec4f05df", "idBeacon": 1, "name": "EMBeacon12709", "rssi": -1 }, { "id": "60e85adb0c3488eeec4f05e1", "idBeacon": 2, "name": "EMBeacon13922", "rssi": -1 }, { "id": "60e85ae90c3488eeec4f05e3", "idBeacon": 3, "name": "EMBeacon12677", "rssi": -1 }])
-  const [selectedRegion, setSelectedRegion] = useState("");
+  const [myRegion, setMyRegion] = useState<IRegionMap | null>(null)
 
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
@@ -33,10 +33,10 @@ export const TimerScreen: React.FC<Props> = () => {
   const beaconListRef = useRef(beaconsList);
   beaconListRef.current = beaconsList;
 
-  useEffect(() => {
-    BleManager.start({ showAlert: false });
-    bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
+  const mapRegionRef = useRef(listMapRegions);
+  mapRegionRef.current = listMapRegions;
 
+  useEffect(() => {
     const getRegioesMap = async () => {
       const listarRegionMapRes = await fetch.listarRegionMap();
 
@@ -52,6 +52,10 @@ export const TimerScreen: React.FC<Props> = () => {
 
       setListMapRegions(listarRegionMapRes.listaRegionsMap);
       setInitialLoading(false);
+
+      BleManager.start({ showAlert: false });
+      bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
+
       scanMyLocation();
     }
 
@@ -60,22 +64,10 @@ export const TimerScreen: React.FC<Props> = () => {
   }, [])
 
   const scanMyLocation = () => {
-    if (selectedRegion == "") {
-      Toast.show(ToastDanger("Erro!", "Região não selecionado!"));
-      return;
-    }
-
-    setIsScanning(true);
-
-    let interval = setInterval(async () => {
+    setInterval(() => {
       setIsScanning(true);
       handleStartScan();
     }, scanInterval);
-
-    setTimeout(() => {
-      setIsScanning(false);
-      clearInterval(interval)
-    }, 120000) //dps de 120 segundos
   }
 
   const handleStartScan = () => {
@@ -83,31 +75,18 @@ export const TimerScreen: React.FC<Props> = () => {
       setIsScanning(true);
       BleManager.scan([], scanTime, true).then(async () => {
         if (beaconListRef.current.find(b => b.rssi === -1)) return
-        if (!!!selectedRegion) return;
 
         let beaconList: Array<IBeacon> = beaconListRef.current
-
-        let myRSSIBeaconId1 = beaconList.find(b => b.idBeacon = 1);
-        let myRSSIBeaconId2 = beaconList.find(b => b.idBeacon = 2);
-        let myRSSIBeaconId3 = beaconList.find(b => b.idBeacon = 3);
-
-        
-        let myRegion: IRegionMap | null = null;
-        let minValor: number = 1000;
-        
-        listMapRegions.map((mapRegion) => {
-          if (!!!myRSSIBeaconId1 || !!!myRSSIBeaconId2 || !!!myRSSIBeaconId3) return;   
-          
-          let RSSI1diff = myRSSIBeaconId1.rssi - mapRegion.rssiBeaconId1Avg
-          let RSSI2diff = myRSSIBeaconId2.rssi - mapRegion.rssiBeaconId2Avg
-          let RSSI3diff = myRSSIBeaconId3.rssi - mapRegion.rssiBeaconId3Avg
-
-          let RSSIArray = [RSSI1diff, RSSI2diff, RSSI3diff];
-          let minRSSI = Math.min(...RSSIArray);
-
-          if(newMinValor)
-            myRegion = mapRegion;
+        beaconList.sort((a: IBeacon, b: IBeacon) => {
+          return b.rssi - a.rssi;
         })
+
+        let maiorBeacon = beaconList[0];
+        let myActualRegion = mapRegionRef.current.find((region) => region.idBeaconMinRSSI === maiorBeacon.idBeacon)
+
+        if (myActualRegion) setMyRegion(myActualRegion);
+        forceUpdate();
+        setIsScanning(false);
       });
     }
   }
@@ -150,7 +129,24 @@ export const TimerScreen: React.FC<Props> = () => {
 
       {!initialLoading && (
         <>
-          <View style={styles.regionTitleContainer}>
+          {!myRegion && (
+            <ActivityIndicator size="large" />
+          )}
+          {myRegion && (
+            <View>
+              <Text>Regiao: {myRegion.name}</Text>
+              <Text>Danger Level: {myRegion.dangerLevel}</Text>
+              {beaconsList.map((beacon) => (
+                <View key={beacon.id}>
+                  <Text>{beacon.name} RSSI: {beacon.rssi}</Text>
+                </View>
+              ))}
+              {isScanning && (
+                <ActivityIndicator size="large" />
+              )}
+            </View>
+          )}
+          {/* <View style={styles.regionTitleContainer}>
             <Text>Região X - perigo Alto</Text>
           </View>
           <View style={{ height: 20 }} />
@@ -158,7 +154,7 @@ export const TimerScreen: React.FC<Props> = () => {
             <Text>
               {time}
             </Text>
-          </View>
+          </View> */}
         </>
       )}
     </View>
