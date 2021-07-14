@@ -75,6 +75,7 @@ export const TimerScreen: React.FC<Props> = () => {
       setIsScanning(true);
       BleManager.scan([], scanTime, true).then(async () => {
         updateMyLocation();
+        if (beaconListRef.current.find(b => b.rssi === -1)) return
 
         const userString: string | null = await getData(key_user);
         if (userString == null) return;
