@@ -80,7 +80,7 @@ export const TimerScreen: React.FC<Props> = () => {
         updateMyLocation();
         if (beaconListRef.current.find(b => b.rssi === -1)) return
         if(myRegionRef.current === null) return;
-
+        if(myRegionRef.current.name === null) return;
 
         const userString: string | null = await getData(key_user);
         if (userString == null) return;
