@@ -3,4 +3,5 @@ export interface IEnviarUserBeaconRSSIReq {
   RSSIBeaconId1?: number,
   RSSIBeaconId2?: number,
   RSSIBeaconId3?: number,
+  regionName: string,
 }

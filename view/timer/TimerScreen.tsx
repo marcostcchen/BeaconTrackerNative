@@ -36,6 +36,9 @@ export const TimerScreen: React.FC<Props> = () => {
   const mapRegionRef = useRef(listMapRegions);
   mapRegionRef.current = listMapRegions;
 
+  const myRegionRef = useRef(myRegion);
+  myRegionRef.current = myRegion;
+
   useEffect(() => {
     const getRegioesMap = async () => {
       const listarRegionMapRes = await fetch.listarRegionMap();
@@ -76,12 +79,14 @@ export const TimerScreen: React.FC<Props> = () => {
       BleManager.scan([], scanTime, true).then(async () => {
         updateMyLocation();
         if (beaconListRef.current.find(b => b.rssi === -1)) return
+        if(myRegionRef.current === null) return;
+
 
         const userString: string | null = await getData(key_user);
         if (userString == null) return;
 
         var user: IUser = JSON.parse(userString);
-        await fetch.sendBeaconsRSSI(beaconListRef.current, user.id);
+        await fetch.sendBeaconsRSSI(beaconListRef.current, myRegionRef.current.name, user.id);
 
         setIsScanning(false);
       });

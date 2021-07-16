@@ -25,7 +25,7 @@ export const listarRegionMap: () => Promise<IListarRegionsMapResponse | null> = 
 }
 
 
-export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, idUser: string) => Promise<IEnviarUserBeaconRSSIRes | null> = (beaconsList, idUser) => {
+export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, regionName: string, idUser: string) => Promise<IEnviarUserBeaconRSSIRes | null> = (beaconsList, regionName, idUser) => {
   return new Promise(async (resolve) => {
     const entrypoint = "enviar-user-beacon-RSSI";
     const token = await getData(key_token);
@@ -35,6 +35,7 @@ export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, idUser: string) => P
       RSSIBeaconId1: beaconsList.find(b => b.idBeacon == 1)?.rssi,
       RSSIBeaconId2: beaconsList.find(b => b.idBeacon == 2)?.rssi,
       RSSIBeaconId3: beaconsList.find(b => b.idBeacon == 3)?.rssi,
+      regionName
     }
 
     fetch(`${urlAPI}/${entrypoint}`, {
