@@ -1,12 +1,13 @@
 import BleManager from 'react-native-ble-manager';
 import React, { useState, useEffect, useRef } from 'react'
-import { NativeEventEmitter, NativeModules, PermissionsAndroid, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
-import { ActivityIndicator } from 'react-native-paper';
+import { Image, NativeEventEmitter, NativeModules, PermissionsAndroid, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { IBeacon, IBLEScan, IRegionMap, IUser } from '../../model';
 import { Status } from '../../types';
 import { getData, key_user, ToastDanger } from '../../utils';
 import * as fetch from './fetch';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Props {
 
@@ -21,6 +22,7 @@ export const TimerScreen: React.FC<Props> = () => {
   const scanTime = 8; //seconds
 
   const [time, setTime] = useState(0);
+  const [isTiming, setIsTiming] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [listMapRegions, setListMapRegions] = useState<Array<IRegionMap>>([])
 
@@ -38,6 +40,18 @@ export const TimerScreen: React.FC<Props> = () => {
 
   const myRegionRef = useRef(myRegion);
   myRegionRef.current = myRegion;
+
+  const isTimingRef = useRef(isTiming);
+  isTimingRef.current = isTiming;
+
+  const myTimeRef = useRef(time);
+  myTimeRef.current = time;
+
+  let timerInterval: any;
+
+  useEffect(() => {
+    if (time === 0) clearInterval(timerInterval)
+  }, [time])
 
   useEffect(() => {
     const getRegioesMap = async () => {
@@ -64,6 +78,7 @@ export const TimerScreen: React.FC<Props> = () => {
 
     getRegioesMap();
     checkPermissions();
+    setInitialLoading(false);
   }, [])
 
   const scanMyLocation = () => {
@@ -79,8 +94,12 @@ export const TimerScreen: React.FC<Props> = () => {
       BleManager.scan([], scanTime, true).then(async () => {
         updateMyLocation();
         if (beaconListRef.current.find(b => b.rssi === -1)) return
-        if(myRegionRef.current === null) return;
-        if(myRegionRef.current.name === null) return;
+        if (myRegionRef.current === null) return;
+        if (myRegionRef.current.name === null) return;
+        if (!isTimingRef) {
+          setIsScanning(false);
+          return;
+        }
 
         const userString: string | null = await getData(key_user);
         if (userString == null) return;
@@ -136,9 +155,44 @@ export const TimerScreen: React.FC<Props> = () => {
     }
   }
 
+  const startTimer = () => {
+    if (!!!myRegion) return;
+
+    setIsTiming(true);
+    setTime(myRegion?.maxStayTimeMinutes);
+
+    timerInterval = setInterval(
+      () => setTime(myTimeRef.current - 1),
+      1000
+    );
+  }
+
+  const FreezerIcon = require("../../img/freezerIcon.png");
+  const SalaDeCorteIcon = require("../../img/cutMeatIcon.png");
+  const ArmazemDeCaixaIcon = require("../../img/multipleBoxIcon.png");
+
+  const getRegionIcon = (myRegion: IRegionMap | null) => {
+    if (myRegion === null) return FreezerIcon
+
+    switch (myRegion.name) {
+      case "Sala de Corte":
+        return SalaDeCorteIcon;
+      case "Armazem de caixas":
+        return ArmazemDeCaixaIcon;
+      default:
+        return FreezerIcon
+    }
+  }
+
+  const imageIcon = getRegionIcon(myRegion);
+
   return (
     <View style={styles.timerContainer}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      {isScanning && (
+        <ActivityIndicator size="small" style={{ position: 'absolute', top: 10, right: 10 }} />
+      )}
+
       {initialLoading && (
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <ActivityIndicator size="large" />
@@ -151,22 +205,41 @@ export const TimerScreen: React.FC<Props> = () => {
             <ActivityIndicator size="large" />
           )}
           {myRegion && (
-            <View>
-              <Text>Regiao: {myRegion.name}</Text>
-              <Text>Danger Level: {myRegion.dangerLevel}</Text>
-              {beaconsList.map((beacon) => (
-                <View key={beacon.id}>
-                  <Text>{beacon.name} RSSI: {beacon.rssi}</Text>
-                </View>
-              ))}
-              {isScanning && (
-                <ActivityIndicator size="large" />
-              )}
-            </View>
+            <>
+              <View style={{ position: 'absolute', top: 10, left: 10 }}>
+                <Text style={styles.detailText}>Regiao: {myRegion.name}</Text>
+                <Text style={styles.detailText}>Danger Level: {myRegion.dangerLevel}</Text>
+                {beaconsList.map((beacon) => (
+                  <View key={beacon.id}>
+                    <Text style={styles.detailText}>{beacon.name} RSSI: {beacon.rssi}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                <Image style={{ height: 200 }} resizeMode="contain" source={imageIcon} />
+                {!isTiming && (
+                  <Button onPress={startTimer} mode="contained">
+                    <Text>
+                      Começar a Trabalhar
+                    </Text>
+                  </Button>
+                )}
+
+                {isTiming && (
+                  <>
+                    <Text style={styles.timeLeftText}>Tempo Restante</Text>
+                    <Text>{time}</Text>
+                    <Text>segundos</Text>
+                  </>
+                )}
+              </View>
+            </>
           )}
         </>
-      )}
-    </View>
+      )
+      }
+    </View >
   )
 }
 
@@ -189,5 +262,12 @@ const styles = StyleSheet.create({
     marginBottom: 100,
     borderWidth: 1,
     borderRadius: 50
+  },
+  detailText: {
+    fontSize: 10
+  },
+  timeLeftText: {
+    fontSize: 18,
+    fontWeight: 'bold'
   }
 })
