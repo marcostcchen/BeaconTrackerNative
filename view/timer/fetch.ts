@@ -1,4 +1,4 @@
-import { IBeacon, IEnviarUserBeaconRSSIReq, IEnviarUserBeaconRSSIRes, IListarRegionsMapResponse } from "../../model";
+import { IBaseRes, IBeacon, IEnviarUserBeaconRSSIReq, IEnviarUserBeaconRSSIRes, IListarRegionsMapResponse } from "../../model";
 import { getData, key_token, urlAPI } from "../../utils";
 
 export const listarRegionMap: () => Promise<IListarRegionsMapResponse | null> = () => {
@@ -48,6 +48,37 @@ export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, regionName: string, 
     })
       .then(res => res.json())
       .then((response: IEnviarUserBeaconRSSIRes) => {
+        resolve(response)
+      })
+      .catch(err => {
+        resolve(null);
+      });
+
+  })
+}
+
+
+
+export const startWorking: (userId: string, maxStayMinutes: number) => Promise<IBaseRes | null> = (userId, maxStayMinutes) => {
+  return new Promise(async (resolve) => {
+    const entrypoint = "start-working";
+    const token = await getData(key_token);
+
+    const json = {
+      maxStayMinutes,
+      userId
+    }
+
+    fetch(`${urlAPI}/${entrypoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token == null ? '' : token,
+      },
+      body: JSON.stringify(json)
+    })
+      .then(res => res.json())
+      .then((response: IBaseRes) => {
         resolve(response)
       })
       .catch(err => {

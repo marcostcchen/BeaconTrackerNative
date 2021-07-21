@@ -88,7 +88,7 @@ export const TimerScreen: React.FC<Props> = () => {
     }, scanInterval);
   }
 
-  const handleStartScan = () => {
+  const handleStartScan = async () => {
     if (!isScanning) {
       setIsScanning(true);
       BleManager.scan([], scanTime, true).then(async () => {
@@ -96,7 +96,7 @@ export const TimerScreen: React.FC<Props> = () => {
         if (beaconListRef.current.find(b => b.rssi === -1)) return
         if (myRegionRef.current === null) return;
         if (myRegionRef.current.name === null) return;
-        if (!isTimingRef) {
+        if (!isTimingRef.current) {
           setIsScanning(false);
           return;
         }
@@ -155,8 +155,14 @@ export const TimerScreen: React.FC<Props> = () => {
     }
   }
 
-  const startTimer = () => {
+  const startTimer = async () => {
     if (!!!myRegion) return;
+
+    const userString: string | null = await getData(key_user);
+    if (userString == null) return;
+
+    var user: IUser = JSON.parse(userString);
+    await fetch.startWorking(user.id, myRegion.maxStayTimeMinutes);
 
     setIsTiming(true);
     setTime(myRegion?.maxStayTimeMinutes);

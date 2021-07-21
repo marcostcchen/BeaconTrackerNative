@@ -8,6 +8,7 @@ export * from './request/IEfetuarLoginRequest';
 export * from './request/IEnviarUserBeaconRSSIReq';
 export * from './request/IAtualizarMapLocationReq';
 
+export * from './response/IBaseRes';
 export * from './response/IEfetuarLoginResponse';
 export * from './response/IListarBeaconsResponse';
 export * from './response/IEnviarUserBeaconRSSIRes';
