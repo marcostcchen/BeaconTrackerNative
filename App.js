@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { getData, key_user, removeData, storeData, AuthContext } from './utils';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { ActivityIndicator, StatusBar, View } from 'react-native';
+import { ActivityIndicator, DevSettings, StatusBar, View } from 'react-native';
 import { HomeStackScreen, MappingStackScreen, StartingStackScreen, TimerStackScreen } from './view';
 import { DrawerContent } from './component';
 import Toast from 'react-native-toast-message';
@@ -50,6 +50,9 @@ export const App = () => {
     signOut: async () => {
       await removeData(key_user);
       dispatch({ type: 'LOGOUT' });
+      setTimeout(() => {
+        DevSettings.reload();
+      }, 1000)
     },
   }), []);
 

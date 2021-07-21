@@ -79,6 +79,8 @@ export const TimerScreen: React.FC<Props> = () => {
     getRegioesMap();
     checkPermissions();
     setInitialLoading(false);
+
+    return () => { bleManagerEmitter.removeAllListeners('BleManagerDiscoverPeripheral') }
   }, [])
 
   const scanMyLocation = () => {
@@ -96,6 +98,7 @@ export const TimerScreen: React.FC<Props> = () => {
         if (beaconListRef.current.find(b => b.rssi === -1)) return
         if (myRegionRef.current === null) return;
         if (myRegionRef.current.name === null) return;
+        
         if (!isTimingRef.current) {
           setIsScanning(false);
           return;
