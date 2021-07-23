@@ -8,8 +8,35 @@ import { ActivityIndicator, DevSettings, StatusBar, View } from 'react-native';
 import { HomeStackScreen, MappingStackScreen, StartingStackScreen, TimerStackScreen } from './view';
 import { DrawerContent } from './component';
 import Toast from 'react-native-toast-message';
+import OneSignal from 'react-native-onesignal';
 
 export const App = () => {
+  //OneSignal Init Code
+  OneSignal.setLogLevel(6, 0);
+  OneSignal.setAppId("b3e53c7e-4779-4ec1-b23c-d2ebd098a66b");
+  //END OneSignal Init Code
+
+  //Prompt for push on iOS
+  OneSignal.promptForPushNotificationsWithUserResponse(response => {
+    console.log("Prompt response:", response);
+  });
+
+  //Method for handling notifications received while app in foreground
+  OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
+    console.log("OneSignal: notification will show in foreground:", notificationReceivedEvent);
+    let notification = notificationReceivedEvent.getNotification();
+    console.log("notification: ", notification);
+    const data = notification.additionalData
+    console.log("additionalData: ", data);
+    // Complete with null means don't show a notification.
+    notificationReceivedEvent.complete(notification);
+  });
+
+  //Method for handling notifications opened
+  OneSignal.setNotificationOpenedHandler(notification => {
+    console.log("OneSignal: notification opened:", notification);
+  });
+
   const Drawer = createDrawerNavigator();
 
   const initialLoginState = {
