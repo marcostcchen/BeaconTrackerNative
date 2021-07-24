@@ -2,10 +2,10 @@ import Toast from "react-native-toast-message";
 import { IEfetuarLoginRequest, IEfetuarLoginResponse, IUser } from "../../../model";
 import { ToastDanger, urlAPI } from "../../../utils";
 
-export const makeLogin: (login: string, password: string) => Promise<IEfetuarLoginResponse | null> = (login, password) => {
+export const makeLogin: (login: string, password: string, userId_OneSignal: string) => Promise<IEfetuarLoginResponse | null> = (login, password, userId_OneSignal) => {
   return new Promise(async (resolve) => {
     const method = "efetuar-login";
-    const json: IEfetuarLoginRequest = { login, password }
+    const json: IEfetuarLoginRequest = { login, password, userId_OneSignal }
 
     await fetch(`${urlAPI}/${method}`, {
       method: 'POST',

@@ -12,6 +12,7 @@ import { IEfetuarLoginResponse } from '../../../model';
 
 import { styles } from './styles';
 import { Status } from '../../../types';
+import OneSignal from 'react-native-onesignal';
 
 interface Props {
   navigation: any
@@ -28,7 +29,9 @@ export const SignInScreen: React.FC<Props> = (props: Props) => {
 
   const makeLogin = async () => {
     setLoading(true);
-    const efetuarLoginResponse: IEfetuarLoginResponse | null = await fetch.makeLogin(login, password);
+  
+    const userId_OneSignal = await (await OneSignal.getDeviceState()).userId
+    const efetuarLoginResponse: IEfetuarLoginResponse | null = await fetch.makeLogin(login, password, userId_OneSignal);
     setLoading(false);
     
     if (!efetuarLoginResponse) {
