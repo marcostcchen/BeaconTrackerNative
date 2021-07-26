@@ -1,13 +1,13 @@
 import BleManager from 'react-native-ble-manager';
 import React, { useState, useEffect, useRef } from 'react'
-import { Image, NativeEventEmitter, NativeModules, PermissionsAndroid, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Image, NativeEventEmitter, NativeModules, PermissionsAndroid, Platform, StatusBar, StyleSheet, Text, Vibration, View } from 'react-native'
 import { ActivityIndicator, Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { IBeacon, IBLEScan, IRegionMap, IUser } from '../../model';
 import { Status } from '../../types';
 import { getData, key_user, ToastDanger } from '../../utils';
 import * as fetch from './fetch';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Sound from 'react-native-sound';
 
 interface Props {
 
@@ -23,8 +23,10 @@ export const TimerScreen: React.FC<Props> = () => {
 
   const [time, setTime] = useState(0);
   const [isTiming, setIsTiming] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [listMapRegions, setListMapRegions] = useState<Array<IRegionMap>>([])
+  const [stopInterval, setStopInterval] = useState(false);
 
   const [beaconsList, setBeaconsList] = useState<Array<IBeacon>>([{ "id": "60e85abd0c3488eeec4f05df", "idBeacon": 1, "name": "EMBeacon12709", "rssi": -1 }, { "id": "60e85adb0c3488eeec4f05e1", "idBeacon": 2, "name": "EMBeacon13922", "rssi": -1 }, { "id": "60e85ae90c3488eeec4f05e3", "idBeacon": 3, "name": "EMBeacon12677", "rssi": -1 }])
   const [myRegion, setMyRegion] = useState<IRegionMap | null>(null)
@@ -47,13 +49,22 @@ export const TimerScreen: React.FC<Props> = () => {
   const myTimeRef = useRef(time);
   myTimeRef.current = time;
 
-  let timerInterval: any;
+  const stopIntervalRef = useRef(stopInterval);
+  stopIntervalRef.current = stopInterval;
 
   useEffect(() => {
-    if (time === 0) clearInterval(timerInterval)
+    if (time == 20) setShowWarning(true);
+    if (time == 1) {
+      Vibration.vibrate(5000)
+      var sound = new Sound('alert.mp3', Sound.MAIN_BUNDLE, (error) => {
+        sound.play();
+      });
+    }
   }, [time])
 
   useEffect(() => {
+    Sound.setCategory('Playback');
+
     const getRegioesMap = async () => {
       const listarRegionMapRes = await fetch.listarRegionMap();
 
@@ -98,7 +109,7 @@ export const TimerScreen: React.FC<Props> = () => {
         if (beaconListRef.current.find(b => b.rssi === -1)) return
         if (myRegionRef.current === null) return;
         if (myRegionRef.current.name === null) return;
-        
+
         if (!isTimingRef.current) {
           setIsScanning(false);
           return;
@@ -108,7 +119,7 @@ export const TimerScreen: React.FC<Props> = () => {
         if (userString == null) return;
 
         var user: IUser = JSON.parse(userString);
-        await fetch.sendBeaconsRSSI(beaconListRef.current, myRegionRef.current.name, user.id);
+        // await fetch.sendBeaconsRSSI(beaconListRef.current, myRegionRef.current.name, user.id);
 
         setIsScanning(false);
       });
@@ -170,10 +181,20 @@ export const TimerScreen: React.FC<Props> = () => {
     setIsTiming(true);
     setTime(myRegion?.maxStayTimeMinutes);
 
-    timerInterval = setInterval(
-      () => setTime(myTimeRef.current - 1),
-      1000
+    let timerInterval = setInterval(
+      () => {
+        setTime(myTimeRef.current - 1)
+        if (myTimeRef.current == 0) clearInterval(timerInterval)
+        if (stopIntervalRef.current) clearInterval(timerInterval)
+      }, 1000
     );
+  }
+
+  const stopTimer = () => {
+    setStopInterval(true)
+    setIsTiming(false);
+
+    //fetch descansar
   }
 
   const FreezerIcon = require("../../img/freezerIcon.png");
@@ -237,17 +258,25 @@ export const TimerScreen: React.FC<Props> = () => {
 
                 {isTiming && (
                   <>
-                    <Text style={styles.timeLeftText}>Tempo Restante</Text>
-                    <Text>{time}</Text>
-                    <Text>segundos</Text>
+                    <View style={{ backgroundColor: showWarning ? "red" : "", alignItems: 'center', borderRadius: 20, padding: 20, paddingTop: 10 }}>
+                      <Text style={styles.timeLeftText}>Tempo Restante</Text>
+                      <Text style={{ fontSize: 60 }}>{time}</Text>
+                      <Text>segundos</Text>
+                    </View>
+                    <Button onPress={stopTimer} mode="contained">
+                      <Text>Descansar</Text>
+                    </Button>
                   </>
+                )}
+
+                {showWarning && (
+                  <Text>Seu tempo está perto do limite! Recomendamos que faça o seu descanso!</Text>
                 )}
               </View>
             </>
           )}
         </>
-      )
-      }
+      )}
     </View >
   )
 }
