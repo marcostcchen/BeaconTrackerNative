@@ -1,16 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View } from 'react-native';
 import { Avatar, Title, Caption, Drawer } from 'react-native-paper';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import { styles } from './DrawerContent.styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { AuthContext } from '../../utils';
+import { AuthContext, getData, key_user } from '../../utils';
+import { useEffect } from 'react';
+import { IUser } from '../../model';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
-
+  const [userName, setUserName] = useState("");
   const { signOut } = React.useContext(AuthContext);
   const navigateTo = (page: string) => {
     props.navigation.navigate(page);
+  }
+
+  useEffect(() => {
+    getUser();
+  }, [])
+
+  const getUser = async () => {
+    const userString = await getData(key_user);
+    if (userString) {
+      const user: IUser = JSON.parse(userString);
+      setUserName(user.name);
+    }
   }
 
   return (
@@ -20,8 +34,8 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
           <View style={styles.userInfoSection}>
             <Avatar.Image source={require('../../img/avatar.png')} size={60} />
             <View style={styles.userDescriptionContent}>
-              <Title style={styles.title}>Fulano Tal</Title>
-              <Caption style={styles.caption}>Operario</Caption>
+              <Title style={styles.title}>{userName}</Title>
+              <Caption style={styles.caption}>Funcionario</Caption>
             </View>
           </View>
 
