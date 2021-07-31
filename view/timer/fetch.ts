@@ -57,8 +57,6 @@ export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, regionName: string, 
   })
 }
 
-
-
 export const startWorking: (userId: string, maxStayMinutes: number) => Promise<IBaseRes | null> = (userId, maxStayMinutes) => {
   return new Promise(async (resolve) => {
     const entrypoint = "start-working";
@@ -66,6 +64,65 @@ export const startWorking: (userId: string, maxStayMinutes: number) => Promise<I
 
     const json = {
       maxStayMinutes,
+      userId
+    }
+
+    fetch(`${urlAPI}/${entrypoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token == null ? '' : token,
+      },
+      body: JSON.stringify(json)
+    })
+      .then(res => res.json())
+      .then((response: IBaseRes) => {
+        resolve(response)
+      })
+      .catch(err => {
+        resolve(null);
+      });
+
+  })
+}
+
+export const startResting: (userId: string, minRestMinutes: number) => Promise<IBaseRes | null> = (userId, minRestMinutes) => {
+  return new Promise(async (resolve) => {
+    const entrypoint = "start-resting";
+    const token = await getData(key_token);
+
+    const json = {
+      minRestMinutes,
+      userId
+    }
+
+    console.log(json)
+
+    fetch(`${urlAPI}/${entrypoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token == null ? '' : token,
+      },
+      body: JSON.stringify(json)
+    })
+      .then(res => res.json())
+      .then((response: IBaseRes) => {
+        resolve(response)
+      })
+      .catch(err => {
+        resolve(null);
+      });
+
+  })
+}
+
+export const finishWorking: (userId: string) => Promise<IBaseRes | null> = (userId) => {
+  return new Promise(async (resolve) => {
+    const entrypoint = "finish-working";
+    const token = await getData(key_token);
+
+    const json = {
       userId
     }
 

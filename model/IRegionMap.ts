@@ -4,6 +4,7 @@ export interface IRegionMap {
   description: string,
   dangerLevel: number,
   maxStayTimeMinutes: number,
+  minRestMinutes: number,
   avgTemperature: number,
   rssiBeaconId1Avg: number,
   rssiBeaconId2Avg: number,

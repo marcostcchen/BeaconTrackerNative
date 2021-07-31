@@ -5,7 +5,7 @@ import { ActivityIndicator, Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { IBeacon, IBLEScan, IRegionMap, IUser } from '../../model';
 import { Status } from '../../types';
-import { getData, key_user, ToastDanger } from '../../utils';
+import { getData, key_user, ToastDanger, ToastSuccess } from '../../utils';
 import * as fetch from './fetch';
 import Sound from 'react-native-sound';
 
@@ -21,8 +21,9 @@ export const TimerScreen: React.FC<Props> = () => {
   const scanInterval = 11000; //miliseconds
   const scanTime = 8; //seconds
 
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(-1);
   const [isTiming, setIsTiming] = useState(false);
+  const [enableFinish, setEnableFinish] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [listMapRegions, setListMapRegions] = useState<Array<IRegionMap>>([])
@@ -119,7 +120,7 @@ export const TimerScreen: React.FC<Props> = () => {
         if (userString == null) return;
 
         var user: IUser = JSON.parse(userString);
-        // await fetch.sendBeaconsRSSI(beaconListRef.current, myRegionRef.current.name, user.id);
+        await fetch.sendBeaconsRSSI(beaconListRef.current, myRegionRef.current.name, user.id);
 
         setIsScanning(false);
       });
@@ -178,6 +179,7 @@ export const TimerScreen: React.FC<Props> = () => {
     var user: IUser = JSON.parse(userString);
     await fetch.startWorking(user.id, myRegion.maxStayTimeMinutes);
 
+    setStopInterval(false)
     setIsTiming(true);
     setTime(myRegion?.maxStayTimeMinutes);
 
@@ -190,11 +192,53 @@ export const TimerScreen: React.FC<Props> = () => {
     );
   }
 
-  const stopTimer = () => {
+  const stopTimer = async () => {
+    if (!!!myRegion) return;
+
+    const userString: string | null = await getData(key_user);
+    if (userString == null) return;
+
+    var user: IUser = JSON.parse(userString);
+    const res = await fetch.startResting(user.id, myRegion.minRestMinutes);
+    if (!res) {
+      Toast.show(ToastDanger("Erro!", "Não foi possível pausar o trabalho, tente novamente!"));
+      return;
+    }
+
+    if (res.status === Status.Error) {
+      Toast.show(ToastDanger("Erro!", res.message));
+      return;
+    }
+
+    Toast.show(ToastSuccess("Descanso iniciado!", `Você possui ${myRegion.minRestMinutes} segundos de descanso!`));
+    setTime(-1);
     setStopInterval(true)
     setIsTiming(false);
+    setEnableFinish(true);
+  }
 
-    //fetch descansar
+  const finishWorking = async () => {
+    const userString: string | null = await getData(key_user);
+    if (userString == null) return;
+
+    var user: IUser = JSON.parse(userString);
+    const res = await fetch.finishWorking(user.id);
+    
+    if (!res) {
+      Toast.show(ToastDanger("Erro!", "Não foi possível finalizar o trabalho, tente novamente!"));
+      return;
+    }
+
+    if (res.status === Status.Error) {
+      Toast.show(ToastDanger("Erro!", res.message));
+      return;
+    }
+
+    Toast.show(ToastSuccess("Trabalho finalizado!", "Até mais"));
+    setTime(-1);
+    setStopInterval(true)
+    setIsTiming(false);
+    setEnableFinish(false);
   }
 
   const FreezerIcon = require("../../img/freezerIcon.png");
@@ -249,11 +293,23 @@ export const TimerScreen: React.FC<Props> = () => {
               <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
                 <Image style={{ height: 200 }} resizeMode="contain" source={imageIcon} />
                 {!isTiming && (
-                  <Button onPress={startTimer} mode="contained">
-                    <Text>
-                      Começar a Trabalhar
-                    </Text>
-                  </Button>
+                  <>
+                    <Button onPress={startTimer} mode="contained">
+                      <Text>
+                        {enableFinish ? "Voltar" : "Começar"} a Trabalhar
+                      </Text>
+                    </Button>
+
+                  <View style={{height: 30}}/>
+
+                    {enableFinish && (
+                      <Button onPress={finishWorking} mode="contained" style={{backgroundColor: 'red'}}>
+                        <Text>
+                          Encerrar trabalho
+                        </Text>
+                      </Button>
+                    )}
+                  </>
                 )}
 
                 {isTiming && (
