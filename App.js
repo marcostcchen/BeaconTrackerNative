@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { getData, key_user, removeData, storeData, AuthContext } from './utils';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { ActivityIndicator, DevSettings, StatusBar, View } from 'react-native';
-import { HomeStackScreen, MappingStackScreen, StartingStackScreen, TimerStackScreen } from './view';
+import { HomeStackScreen, MappingStackScreen, StartingStackScreen, TimerStackScreen,NotificationsStackScreen } from './view';
 import { DrawerContent } from './component';
 import Toast from 'react-native-toast-message';
 import OneSignal from 'react-native-onesignal';
@@ -110,6 +110,7 @@ export const App = () => {
               <Drawer.Screen name="TimerStackScreen" component={TimerStackScreen} />
               <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
               <Drawer.Screen name="MappingStackScreen" component={MappingStackScreen} />
+              <Drawer.Screen name="NotificationsStackScreen" component={NotificationsStackScreen} />
             </Drawer.Navigator>)}
         </NavigationContainer>
         <Toast ref={(ref) => Toast.setRef(ref)} />

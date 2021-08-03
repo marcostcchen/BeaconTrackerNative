@@ -40,10 +40,10 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
           </View>
 
           <Drawer.Section style={styles.bottomDrawerSection}>
-            <DrawerItem
+            {/* <DrawerItem
               icon={({ color, size }) => <Icon name="home-outline" color={color} size={size} />}
               label="Home"
-              onPress={() => navigateTo("HomeStackScreen")} />
+              onPress={() => navigateTo("HomeStackScreen")} /> */}
 
             <DrawerItem
               icon={({ color, size }) => <Icon name="timer-outline" color={color} size={size} />}
@@ -53,12 +53,12 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
             <DrawerItem
               icon={({ color, size }) => <Icon name="bell-outline" color={color} size={size} />}
               label="Notificações"
-              onPress={() => navigateTo("NotificationScreen")} />
+              onPress={() => navigateTo("NotificationsStackScreen")} />
 
-            <DrawerItem
+            {/* <DrawerItem
               icon={({ color, size }) => <Icon name="home-map-marker" color={color} size={size} />}
               label="Mapeamento"
-              onPress={() => navigateTo("MappingStackScreen")} />
+              onPress={() => navigateTo("MappingStackScreen")} /> */}
 
           </Drawer.Section>
 
