@@ -193,6 +193,7 @@ export const TimerScreen: React.FC<Props> = () => {
   }
 
   const stopTimer = async () => {
+    setShowWarning(false);
     if (!!!myRegion) return;
 
     const userString: string | null = await getData(key_user);
@@ -223,7 +224,7 @@ export const TimerScreen: React.FC<Props> = () => {
 
     var user: IUser = JSON.parse(userString);
     const res = await fetch.finishWorking(user.id);
-    
+
     if (!res) {
       Toast.show(ToastDanger("Erro!", "Não foi possível finalizar o trabalho, tente novamente!"));
       return;
@@ -300,10 +301,10 @@ export const TimerScreen: React.FC<Props> = () => {
                       </Text>
                     </Button>
 
-                  <View style={{height: 30}}/>
+                    <View style={{ height: 30 }} />
 
                     {enableFinish && (
-                      <Button onPress={finishWorking} mode="contained" style={{backgroundColor: 'red'}}>
+                      <Button onPress={finishWorking} mode="contained" style={{ backgroundColor: 'red' }}>
                         <Text>
                           Encerrar trabalho
                         </Text>
@@ -314,7 +315,7 @@ export const TimerScreen: React.FC<Props> = () => {
 
                 {isTiming && (
                   <>
-                    <View style={{ backgroundColor: showWarning ? "red" : "", alignItems: 'center', borderRadius: 20, padding: 20, paddingTop: 10 }}>
+                    <View style={{ backgroundColor: showWarning ? "red" : "", alignItems: 'center', borderRadius: 20, padding: 20, marginBottom: 20, paddingTop: 10 }}>
                       <Text style={styles.timeLeftText}>Tempo Restante</Text>
                       <Text style={{ fontSize: 60 }}>{time}</Text>
                       <Text>segundos</Text>
@@ -322,11 +323,12 @@ export const TimerScreen: React.FC<Props> = () => {
                     <Button onPress={stopTimer} mode="contained">
                       <Text>Descansar</Text>
                     </Button>
+
                   </>
                 )}
 
                 {showWarning && (
-                  <Text>Seu tempo está perto do limite! Recomendamos que faça o seu descanso!</Text>
+                  <Text  style={{padding: 15}}>Seu tempo está perto do limite! Recomendamos que faça o seu descanso!</Text>
                 )}
               </View>
             </>
