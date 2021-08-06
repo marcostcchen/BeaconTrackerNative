@@ -15,3 +15,4 @@ export * from './response/IListarBeaconsResponse';
 export * from './response/IEnviarUserBeaconRSSIRes';
 export * from './response/IAtualizarMapLocationRes';
 export * from './response/IListarRegionsMapResponse';
+export * from './response/IListarNotificacoesUsuarioRes';

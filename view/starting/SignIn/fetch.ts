@@ -7,6 +7,9 @@ export const makeLogin: (login: string, password: string, userId_OneSignal: stri
     const method = "efetuar-login";
     const json: IEfetuarLoginRequest = { login, password, userId_OneSignal }
 
+    console.log(json)
+    console.log(`${urlAPI}/${method}`)
+
     await fetch(`${urlAPI}/${method}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', },
@@ -19,6 +22,7 @@ export const makeLogin: (login: string, password: string, userId_OneSignal: stri
       .catch(err => {
         setTimeout(() => {
           if (err.message === 'Network request failed') {
+            console.log(err)
             Toast.show(ToastDanger("Erro!", "Sem Conexão com internet, tente novamente!"));
           }
         }, 100)
