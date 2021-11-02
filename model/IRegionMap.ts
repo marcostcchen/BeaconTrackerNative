@@ -1,5 +1,5 @@
 export interface IRegionMap {
-  id: string,
+  id: number,
   name: string,
   description: string,
   dangerLevel: number,

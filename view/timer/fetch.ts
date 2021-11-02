@@ -1,4 +1,5 @@
-import { IBaseRes, IBeacon, IEnviarUserBeaconRSSIReq, IEnviarUserBeaconRSSIRes, IListarRegionsMapResponse } from "../../model";
+import { IBaseRes, IBeacon, ICreateWorkSessionReq, IEnviarUserBeaconRSSIRes, IListarRegionsMapResponse } from "../../model";
+import { WorkingStatus } from "../../types";
 import { getData, key_token, urlAPI } from "../../utils";
 
 export const listarRegionMap: () => Promise<IListarRegionsMapResponse | null> = () => {
@@ -7,7 +8,7 @@ export const listarRegionMap: () => Promise<IListarRegionsMapResponse | null> = 
     const token = await getData(key_token);
 
     fetch(`${urlAPI}/${entrypoint}`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token == null ? '' : token,
@@ -25,75 +26,24 @@ export const listarRegionMap: () => Promise<IListarRegionsMapResponse | null> = 
 }
 
 
-export const sendBeaconsRSSI: (beaconsList: Array<IBeacon>, regionName: string, idUser: string) => Promise<IEnviarUserBeaconRSSIRes | null> = (beaconsList, regionName, idUser) => {
+export const createWorkSession: (beaconsList: Array<IBeacon>, regionName: string, idUser: string, workingStatus: WorkingStatus, startTime: Date) => Promise<IEnviarUserBeaconRSSIRes | null> = (beaconsList, regionName, idUser, workingStatus, startTime) => {
   return new Promise(async (resolve) => {
-    const entrypoint = "enviar-user-beacon-RSSI";
+    const entrypoint = "create-work-session";
     const token = await getData(key_token);
 
-    const json: IEnviarUserBeaconRSSIReq = {
-      idUser,
-      RSSIBeaconId1: beaconsList.find(b => b.idBeacon == 1)?.rssi,
-      RSSIBeaconId2: beaconsList.find(b => b.idBeacon == 2)?.rssi,
-      RSSIBeaconId3: beaconsList.find(b => b.idBeacon == 3)?.rssi,
-      regionName
-    }
-
-    fetch(`${urlAPI}/${entrypoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token == null ? '' : token,
-      },
-      body: JSON.stringify(json)
-    })
-      .then(res => res.json())
-      .then((response: IEnviarUserBeaconRSSIRes) => {
-        resolve(response)
-      })
-      .catch(err => {
-        resolve(null);
-      });
-
-  })
-}
-
-export const startWorking: (userId: string, maxStayMinutes: number) => Promise<IBaseRes | null> = (userId, maxStayMinutes) => {
-  return new Promise(async (resolve) => {
-    const entrypoint = "start-working";
-    const token = await getData(key_token);
-
-    const json = {
-      maxStayMinutes,
-      userId
-    }
-
-    fetch(`${urlAPI}/${entrypoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token == null ? '' : token,
-      },
-      body: JSON.stringify(json)
-    })
-      .then(res => res.json())
-      .then((response: IBaseRes) => {
-        resolve(response)
-      })
-      .catch(err => {
-        resolve(null);
-      });
-
-  })
-}
-
-export const startResting: (userId: string, minRestMinutes: number) => Promise<IBaseRes | null> = (userId, minRestMinutes) => {
-  return new Promise(async (resolve) => {
-    const entrypoint = "start-resting";
-    const token = await getData(key_token);
-
-    const json = {
-      minRestMinutes,
-      userId
+    const json: ICreateWorkSessionReq = {
+      userId: idUser,
+      workSession: {
+        regionName,
+        startTime, 
+        measureTime: new Date(),
+        status: workingStatus,
+        beaconsRssi: {
+          RSSIBeaconId1: beaconsList.find(b => b.idBeacon == 1)?.rssi,
+          RSSIBeaconId2: beaconsList.find(b => b.idBeacon == 2)?.rssi,
+          RSSIBeaconId3: beaconsList.find(b => b.idBeacon == 3)?.rssi,
+        }
+      }
     }
 
     console.log(json)
@@ -107,35 +57,7 @@ export const startResting: (userId: string, minRestMinutes: number) => Promise<I
       body: JSON.stringify(json)
     })
       .then(res => res.json())
-      .then((response: IBaseRes) => {
-        resolve(response)
-      })
-      .catch(err => {
-        resolve(null);
-      });
-
-  })
-}
-
-export const finishWorking: (userId: string) => Promise<IBaseRes | null> = (userId) => {
-  return new Promise(async (resolve) => {
-    const entrypoint = "finish-working";
-    const token = await getData(key_token);
-
-    const json = {
-      userId
-    }
-
-    fetch(`${urlAPI}/${entrypoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token == null ? '' : token,
-      },
-      body: JSON.stringify(json)
-    })
-      .then(res => res.json())
-      .then((response: IBaseRes) => {
+      .then((response: IEnviarUserBeaconRSSIRes) => {
         resolve(response)
       })
       .catch(err => {

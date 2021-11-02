@@ -4,7 +4,7 @@ import { Image, NativeEventEmitter, NativeModules, PermissionsAndroid, Platform,
 import { ActivityIndicator, Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { IBeacon, IBLEScan, IRegionMap, IUser } from '../../model';
-import { Status } from '../../types';
+import { Status, WorkingStatus } from '../../types';
 import { getData, key_user, ToastDanger, ToastSuccess } from '../../utils';
 import * as fetch from './fetch';
 import Sound from 'react-native-sound';
@@ -17,6 +17,8 @@ export const TimerScreen: React.FC<Props> = () => {
   const BleManagerModule = NativeModules.BleManager;
   const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
   const [isScanning, setIsScanning] = useState(false);
+  const [workingStatus, setWorkingStatus] = useState(WorkingStatus.Finished);
+  const [startTime, setStartTime] = useState(new Date());
 
   const scanInterval = 11000; //miliseconds
   const scanTime = 8; //seconds
@@ -46,6 +48,12 @@ export const TimerScreen: React.FC<Props> = () => {
 
   const isTimingRef = useRef(isTiming);
   isTimingRef.current = isTiming;
+
+  const workingStatusRef = useRef(workingStatus);
+  workingStatusRef.current = workingStatus;
+
+  const startTimeRef = useRef(startTime);
+  startTimeRef.current = startTime;
 
   const myTimeRef = useRef(time);
   myTimeRef.current = time;
@@ -97,34 +105,27 @@ export const TimerScreen: React.FC<Props> = () => {
 
   const scanMyLocation = () => {
     setInterval(() => {
-      setIsScanning(true);
       handleStartScan();
     }, scanInterval);
   }
 
   const handleStartScan = async () => {
-    if (!isScanning) {
-      setIsScanning(true);
-      BleManager.scan([], scanTime, true).then(async () => {
-        updateMyLocation();
-        if (beaconListRef.current.find(b => b.rssi === -1)) return
-        if (myRegionRef.current === null) return;
-        if (myRegionRef.current.name === null) return;
+    setIsScanning(true);
+    BleManager.scan([], scanTime, true).then(async () => {
 
-        if (!isTimingRef.current) {
-          setIsScanning(false);
-          return;
-        }
+      if (beaconListRef.current.find(b => b.rssi === -1)) return
+      if (myRegionRef.current === null) return;
+      if (myRegionRef.current.id === null) return;
 
-        const userString: string | null = await getData(key_user);
-        if (userString == null) return;
+      const userString: string | null = await getData(key_user);
+      if (userString == null) return;
 
-        var user: IUser = JSON.parse(userString);
-        await fetch.sendBeaconsRSSI(beaconListRef.current, myRegionRef.current.name, user.id);
+      var user: IUser = JSON.parse(userString);
+      const res = await fetch.createWorkSession(beaconListRef.current, myRegionRef.current.name, user.id, workingStatusRef.current, startTimeRef.current);
+      console.log(res)
 
-        setIsScanning(false);
-      });
-    }
+      setIsScanning(false);
+    });
   }
 
   const handleDiscoverPeripheral = (peripheral: IBLEScan) => {
@@ -171,17 +172,14 @@ export const TimerScreen: React.FC<Props> = () => {
   }
 
   const startTimer = async () => {
-    if (!!!myRegion) return;
+    if (myRegionRef?.current == null) return;
 
-    const userString: string | null = await getData(key_user);
-    if (userString == null) return;
-
-    var user: IUser = JSON.parse(userString);
-    await fetch.startWorking(user.id, myRegion.maxStayTimeMinutes);
+    setWorkingStatus(WorkingStatus.Working);
+    setStartTime(new Date());
 
     setStopInterval(false)
     setIsTiming(true);
-    setTime(myRegion?.maxStayTimeMinutes);
+    setTime(myRegionRef.current.maxStayTimeMinutes);
 
     let timerInterval = setInterval(
       () => {
@@ -196,50 +194,25 @@ export const TimerScreen: React.FC<Props> = () => {
     setShowWarning(false);
     if (!!!myRegion) return;
 
-    const userString: string | null = await getData(key_user);
-    if (userString == null) return;
-
-    var user: IUser = JSON.parse(userString);
-    const res = await fetch.startResting(user.id, myRegion.minRestMinutes);
-    if (!res) {
-      Toast.show(ToastDanger("Erro!", "Não foi possível pausar o trabalho, tente novamente!"));
-      return;
-    }
-
-    if (res.status === Status.Error) {
-      Toast.show(ToastDanger("Erro!", res.message));
-      return;
-    }
-
-    Toast.show(ToastSuccess("Descanso iniciado!", `Você possui ${myRegion.minRestMinutes} segundos de descanso!`));
+    setStartTime(new Date());
+    setWorkingStatus(WorkingStatus.Resting);
     setTime(-1);
     setStopInterval(true)
     setIsTiming(false);
     setEnableFinish(true);
+
+    Toast.show(ToastSuccess("Descanso iniciado!", `Você possui ${myRegion.minRestMinutes} segundos de descanso!`));
   }
 
   const finishWorking = async () => {
-    const userString: string | null = await getData(key_user);
-    if (userString == null) return;
-
-    var user: IUser = JSON.parse(userString);
-    const res = await fetch.finishWorking(user.id);
-
-    if (!res) {
-      Toast.show(ToastDanger("Erro!", "Não foi possível finalizar o trabalho, tente novamente!"));
-      return;
-    }
-
-    if (res.status === Status.Error) {
-      Toast.show(ToastDanger("Erro!", res.message));
-      return;
-    }
-
-    Toast.show(ToastSuccess("Trabalho finalizado!", "Até mais"));
+    setStartTime(new Date());
+    setWorkingStatus(WorkingStatus.Finished);
     setTime(-1);
     setStopInterval(true)
     setIsTiming(false);
     setEnableFinish(false);
+
+    Toast.show(ToastSuccess("Trabalho finalizado!", "Até mais"));
   }
 
   const FreezerIcon = require("../../img/freezerIcon.png");
@@ -328,7 +301,7 @@ export const TimerScreen: React.FC<Props> = () => {
                 )}
 
                 {showWarning && (
-                  <Text  style={{padding: 15}}>Seu tempo está perto do limite! Recomendamos que faça o seu descanso!</Text>
+                  <Text style={{ padding: 15 }}>Seu tempo está perto do limite! Recomendamos que faça o seu descanso!</Text>
                 )}
               </View>
             </>
